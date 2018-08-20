@@ -1,0 +1,24 @@
+{
+  "name": "silver-git",
+  "productName": "SilverGit",
+  "version": "0.0.1",
+  "description": "Git desktop client.",
+  "main": "src/main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alegnz/silver-git.git"
+  },
+  "keywords": [],
+  "author": "alegnz",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/alegnz/silver-git/issues"
+  },
+  "homepage": "https://github.com/alegnz/silver-git#readme",
+  "devDependencies": {
+    "electron": "^2.0.7"
+  }
+}
