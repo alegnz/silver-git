@@ -3,8 +3,27 @@
   <head>
     <meta charset="utf-8">
     <title></title>
+
+    <script>var $ = jQuery = require("jquery");</script>
   </head>
   <body>
-    <h1>Welcome to SilverGit!</h1>
+    <div id="main"></div>
   </body>
+
+  <script>
+    var app = require('./lib/app');
+
+    app.on('rendered', content => {
+      $('#main').html(content);
+    });
+
+    function showContent(view) {
+      app.emit('view-selected', view);
+    }
+
+    $(function() {
+      showContent('dashboard');
+    });
+
+  </script>
 </html>
