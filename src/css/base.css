@@ -1,0 +1,106 @@
+body {
+  margin: 0;
+}
+
+/******************************************************************************
+ ****  dashboard
+ *****************************************************************************/
+
+#main {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+#header {
+  height: 50px;
+  padding: 10px;
+
+  background-color: pink;
+}
+
+#dashboard-main {
+  display: flex;
+  flex-direction: row;
+  flex-grow: 1;
+
+  background-color: grey;
+}
+
+#left-bar {
+  display: flex;
+  flex-direction: column;;
+  flex-shrink: 0;
+  padding: 10px;
+  width: 300px;
+
+  background-color: orange;
+}
+
+#right-bar {
+  flex-shrink: 0;
+  padding: 10px;
+  width: 300px;
+
+  background-color: red;
+}
+
+#center {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  padding: 10px;
+
+  background-color: green;
+}
+
+#diff {
+  flex-grow: 1;
+}
+
+#log {
+  flex-grow: 1;
+
+  display: none;
+}
+
+#console {
+  background-color: black;
+  color: white;
+  height: 135px;
+}
+
+/******************************************************************************
+ ****  header
+ *****************************************************************************/
+
+ #txtPath {
+   width: 300px;
+   margin-right: 10px;
+ }
+
+ #btnChangePath {
+   display: none;
+ }
+
+
+/******************************************************************************
+ ****  left-bar section
+ *****************************************************************************/
+
+#branches {
+  flex-grow: 1;
+}
+
+#txtCommitTitle {
+  border: 0;
+  height: 25px;
+  padding: 0;
+}
+
+#txtCommitMessage {
+  border: 0;
+  height: 100px;
+  margin-top: 10px;
+  padding: 0;
+}
