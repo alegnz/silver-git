@@ -1,13 +1,19 @@
 div#header
   input#txtPath(type="text")/
-  button#btnChangePath Change path
+  button#btnChangePath.hidden Change path
   button#btnSavePath Save path
 
 div#dashboard-main
   div#left-bar
-    div#branches
-    input#txtCommitTitle(type="text")/
-    input#txtCommitMessage(type="text")/
+    ul#branches
+      li Local
+        ul#localBranches
+      li Remote
+        ul#remoteBranches
+      li Tags
+        ul#tags
+    input#txtCommitTitle(type="text" placeholder="Commit summary")/
+    textarea#txtCommitMessage(type="text" placeholder="Commit description")/
     
   div#center
     div#diff
@@ -21,3 +27,5 @@ div#dashboard-main
   
   div#right-bar
     p Right bar
+    
+  script(src="scripts/dashboard.js")

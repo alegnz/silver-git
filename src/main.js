@@ -6,7 +6,7 @@ let mainWindow;
 app.on('ready', _ => {
   mainWindow = new BrowserWindow({
     width: 1000,
-    height: 800
+    height: 500
   });
 
   mainWindow.loadURL(`file://${__dirname}/main.html`);
