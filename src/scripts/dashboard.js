@@ -40,9 +40,12 @@ function initializeRepository() {
           parts.splice(0, 2);
 
           let remoteBranchName = parts.join('/');
-          $('#remote-' + remoteName).append('<li>' + remoteBranchName + '</li>')
+          $('#remote-' + remoteName).append('<li><i class="fas fa-code-branch"></i>' + remoteBranchName + '</li>')
         } else {
-          $('#localBranches').append('<li>' + branchName + '</li>');
+          let html = '<li' + (branchName == branchSummary.current ? ' class="currentBranch"' : '') + '>'
+              + '<i class="fas fa-code-branch"></i>' + branchName + '</li>';
+
+          $('#localBranches').append(html);
         }
       });
     } else {

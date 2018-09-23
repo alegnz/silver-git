@@ -6,11 +6,14 @@ div#header
 div#dashboard-main
   div#left-bar
     ul#branches
-      li Local
+      li 
+        i.fas.fa-desktop/ Local
         ul#localBranches
-      li Remote
+      li
+        i.fas.fa-cloud/ Remote
         ul#remoteBranches
-      li Tags
+      li
+        i.fa.fa-tags/ Tags
         ul#tags
     input#txtCommitTitle(type="text" placeholder="Commit summary")/
     textarea#txtCommitMessage(type="text" placeholder="Commit description")/
@@ -19,7 +22,7 @@ div#dashboard-main
     div#diff
       h1 This is the diff section
     
-    div#log
+    div#log.hidden
       h1 This is the log section
     
     div#console

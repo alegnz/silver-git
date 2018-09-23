@@ -1,4 +1,6 @@
 body {
+  box-sizing: border-box;
+  font-family: sans-serif;
   margin: 0;
 }
 
@@ -11,24 +13,21 @@ body {
  *****************************************************************************/
 
 #main {
+  background-color: #ddd;
   display: flex;
   flex-direction: column;
   height: 100vh;
 }
 
 #header {
-  height: 50px;
+  height: 30px;
   padding: 10px;
-
-  background-color: pink;
 }
 
 #dashboard-main {
   display: flex;
   flex-direction: row;
   flex-grow: 1;
-
-  background-color: grey;
 }
 
 #left-bar {
@@ -37,13 +36,11 @@ body {
   flex-shrink: 0;
   padding: 10px;
   width: 300px;
-
-  background-color: orange;
 }
 
 #right-bar {
   flex-shrink: 0;
-  padding: 10px;
+  margin: 10px;
   width: 300px;
 
   background-color: red;
@@ -53,25 +50,25 @@ body {
   display: flex;
   flex-direction: column;
   flex-grow: 1;
-  padding: 10px;
-
-  background-color: green;
 }
 
 #diff {
   flex-grow: 1;
+  margin: 10px 0;
+
+  background-color: green;
 }
 
 #log {
   flex-grow: 1;
-
-  display: none;
+  margin: 10px;
 }
 
 #console {
   background-color: black;
   color: white;
-  height: 135px;
+  height: 155px;
+  margin-bottom: 10px;
 }
 
 /******************************************************************************
@@ -94,11 +91,22 @@ body {
   margin: 0;
   padding: 10px;
 
+  overflow-x: hidden;
+  overflow-y: scroll;
+
   background-color: yellow;
+}
+
+#branches i.fas {
+  margin-right: 5px;
 }
 
 #branches li {
   list-style-type: none;
+}
+
+.currentBranch {
+  font-weight: bold;
 }
 
 #txtCommitTitle {
