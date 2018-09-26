@@ -11,8 +11,6 @@ function initializeRepository() {
 
   changeRepoVisibility();
 
-  console.log('path: ' + path);
-
   // Cleans branches
   $('#localBranches').empty();
   $('#remoteBranches').empty();
@@ -21,8 +19,6 @@ function initializeRepository() {
   // Shows local and remote branches
   git(path).branch((error, branchSummary) => {
     if (!error) {
-      console.log(branchSummary);
-
       branchSummary.all.forEach((branchName) => {
         if (branchName.startsWith("remotes/")) {
           let parts = branchName.split('/');
@@ -42,7 +38,7 @@ function initializeRepository() {
           let remoteBranchName = parts.join('/');
           $('#remote-' + remoteName).append('<li><i class="fas fa-code-branch"></i>' + remoteBranchName + '</li>')
         } else {
-          let html = '<li' + (branchName == branchSummary.current ? ' class="currentBranch"' : '') + '>'
+          let html = '<li' + (branchName == branchSummary.current ? ' class="current-branch"' : '') + '>'
               + '<i class="fas fa-code-branch"></i>' + branchName + '</li>';
 
           $('#localBranches').append(html);
@@ -62,6 +58,54 @@ function initializeRepository() {
       });
     }
   });
+
+  git(path).status((error, statusSummary) => {
+    console.log('status');
+    console.log(statusSummary);
+
+    if (!error) {
+      // Cleans wip and staging areas
+      $('#wip').empty();
+      $('#staging').empty();
+
+      statusSummary.files.forEach((fileStatusSummary) => {
+        console.log(fileStatusSummary);
+
+        if (fileStatusSummary.working_dir != ' ') {
+          createFileElement(fileStatusSummary.path, fileStatusSummary.working_dir, $('#wip'));
+        }
+
+        if (fileStatusSummary.index != ' ' && fileStatusSummary.index != '?') {
+          createFileElement(fileStatusSummary.path, fileStatusSummary.index, $('#staging'));
+        }
+      });
+    } else {
+      console.log('An error ocurred');
+    }
+  });
+}
+
+function createFileElement(filePath, status, container) {
+  let statusClass;
+  if (status == '?') {
+    statusClass = 'file untracked';
+  } else if (status == 'M') {
+    statusClass = 'file modified';
+  } else if (status == 'A') {
+    statusClass = 'file added';
+  } else if (status == 'D') {
+    statusClass = 'file deleted';
+  } else if (status = 'R') {
+    statusClass = 'file renamed';
+  } else if (status == 'C') {
+    statusClass = 'file copied';
+  } else if (status = 'U') {
+    statusClass = 'file updated-unmerged';
+  }
+
+  let htmlPath = '<p class="' + statusClass + '">' + filePath + '</p>';
+
+  container.append(htmlPath);
 }
 
 function changeRepoVisibility() {

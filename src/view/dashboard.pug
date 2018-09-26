@@ -5,6 +5,7 @@ div#header
 
 div#dashboard-main
   div#left-bar
+    p.section-title Branches
     ul#branches
       li 
         i.fas.fa-desktop/ Local
@@ -15,6 +16,7 @@ div#dashboard-main
       li
         i.fa.fa-tags/ Tags
         ul#tags
+    p.section-title Commit
     input#txtCommitTitle(type="text" placeholder="Commit summary")/
     textarea#txtCommitMessage(type="text" placeholder="Commit description")/
     
@@ -29,6 +31,9 @@ div#dashboard-main
       p This is the console
   
   div#right-bar
-    p Right bar
+    p.section-title Work in progress
+    div#wip
+    p.section-title Staging area
+    div#staging
     
   script(src="scripts/dashboard.js")
