@@ -16,11 +16,11 @@ body {
   background-color: #ddd;
   display: flex;
   flex-direction: column;
-  height: calc(100vh - 20px);
-  padding: 10px;
+  height: 100vh;
 }
 
 #header {
+  flex-shrink: 0;
   height: 20px;
   padding: 10px;
 }
@@ -29,12 +29,18 @@ body {
   display: flex;
   flex-direction: row;
   flex-grow: 1;
+  padding: 0 10px;
 }
 
 #center {
   display: flex;
   flex-direction: column;
   flex-grow: 1;
+}
+
+#footer {
+  flex-shrink: 0;
+  height: 25px;
 }
 
 .section {
@@ -224,11 +230,24 @@ body {
 
 
 /******************************************************************************
-****  console section
+****  Terminal section
 *****************************************************************************/
 
-#console {
+#terminal {
+  background-color: #fcfcfc;
+}
+
+#terminal-header {
+  display: flex;
+  justify-content: space-between;
+  padding: 7px 10px;
+}
+
+.terminal-body {
   background-color: black;
   color: white;
-  height: 155px;
+  font-family: monospace;
+  height: 200px;
+  margin: 0 5px;
+  padding: 5px;
 }
