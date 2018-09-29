@@ -1,4 +1,4 @@
-const git = require('simple-git');
+const git = require('simple-git')();
 
 $(document).ready(() => {
   $('#btnSavePath').click(initializeRepository);
@@ -9,15 +9,28 @@ $(document).ready(() => {
 function initializeRepository() {
   let path = $('#txtPath').val();
 
+  // TODO check if it's a git repo
+  if (path != '') {
+    git.cwd(path);
+  }
+
   changeRepoVisibility();
 
+  createBranchSection();
+
+  createFileLists();
+
+  createDiffSection();
+}
+
+function createBranchSection() {
   // Cleans branches
   $('#localBranches').empty();
   $('#remoteBranches').empty();
   $('#tags').empty();
 
   // Shows local and remote branches
-  git(path).branch((error, branchSummary) => {
+  git.branch((error, branchSummary) => {
     if (!error) {
       branchSummary.all.forEach((branchName) => {
         if (branchName.startsWith("remotes/")) {
@@ -51,17 +64,17 @@ function initializeRepository() {
   });
 
   // Shows tags
-  git(path).tags((error, tagList) => {
+  git.tags((error, tagList) => {
     if (!error) {
       tagList.all.forEach((tagName) => {
         $('#tags').append('<li>' + tagName + '</li>');
       });
     }
   });
+}
 
-  git(path).status((error, statusSummary) => {
-    console.log('status');
-    console.log(statusSummary);
+function createFileLists() {
+  git.status((error, statusSummary) => {
 
     if (!error) {
       // Cleans wip and staging areas
@@ -69,8 +82,6 @@ function initializeRepository() {
       $('#staging').empty();
 
       statusSummary.files.forEach((fileStatusSummary) => {
-        console.log(fileStatusSummary);
-
         if (fileStatusSummary.working_dir != ' ') {
           createFileElement(fileStatusSummary.path, fileStatusSummary.working_dir, $('#wip'));
         }
@@ -83,6 +94,16 @@ function initializeRepository() {
       console.log('An error ocurred');
     }
   });
+}
+
+function createDiffSection() {
+  // git.diff((error, result) => {
+  //   if (!error) {
+  //     $('#diff .section-content').text(result);
+  //   } else {
+  //     console.log('An error ocurred');
+  //   }
+  // });
 }
 
 function createFileElement(filePath, status, container) {

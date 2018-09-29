@@ -5,35 +5,51 @@ div#header
 
 div#dashboard-main
   div#left-bar
-    p.section-title Branches
-    ul#branches
-      li 
-        i.fas.fa-desktop/ Local
-        ul#localBranches
-      li
-        i.fas.fa-cloud/ Remote
-        ul#remoteBranches
-      li
-        i.fa.fa-tags/ Tags
-        ul#tags
-    p.section-title Commit
-    input#txtCommitTitle(type="text" placeholder="Commit summary")/
-    textarea#txtCommitMessage(type="text" placeholder="Commit description")/
+    // BRANCHES SECTION
+    div#branches.section
+      p.section-title Branches
+      ul.section-content
+        li 
+          i.fas.fa-desktop/ Local
+          ul#localBranches
+        li
+          i.fas.fa-cloud/ Remote
+          ul#remoteBranches
+        li
+          i.fa.fa-tags/ Tags
+          ul#tags
+    
+    // COMMIT SECTION
+    div#commit.section
+      p.section-title Commit
+      div.section-content
+        input#txtCommitTitle(type="text" placeholder="Commit summary")/
+        textarea#txtCommitMessage(type="text" placeholder="Commit description")/
     
   div#center
-    div#diff
-      h1 This is the diff section
+    div#files
+      // WIP SECTION
+      div.section.file-list
+        p.section-title Work in progress
+        div#wip.section-content
+          
+      // STAGING SECTION
+      div.section.file-list
+        p.section-title Staging area
+        div#staging.section-content
     
-    div#log.hidden
-      h1 This is the log section
+    // DIFF SECTION
+    div#diff.section
+      div.section-title Diff
+      div.section-content
     
-    div#console
-      p This is the console
-  
-  div#right-bar
-    p.section-title Work in progress
-    div#wip
-    p.section-title Staging area
-    div#staging
+    // LOG SECTION
+    div#log.section.hidden
+      div.section-title Log
+      div.section-content
+        h1 This is the log section
+      
+div#console.hidden
+  p This is the console
     
   script(src="scripts/dashboard.js")

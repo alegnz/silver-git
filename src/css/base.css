@@ -5,7 +5,7 @@ body {
 }
 
 .hidden {
-  display: none;
+  display: none !important;
 }
 
 /******************************************************************************
@@ -16,7 +16,8 @@ body {
   background-color: #ddd;
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  height: calc(100vh - 20px);
+  padding: 10px;
 }
 
 #header {
@@ -36,25 +37,19 @@ body {
   flex-grow: 1;
 }
 
-#diff {
-  flex-grow: 1;
-  margin: 10px 0;
-}
-
-#log {
-  flex-grow: 1;
-  margin: 10px;
-}
-
-#console {
-  background-color: black;
-  color: white;
-  height: 155px;
-  margin-bottom: 10px;
+.section {
+  display: flex;
+  flex-direction: column;
+  margin: 5px 10px;
 }
 
 .section-title {
-  margin: 5px 0;
+  margin: 0 0 5px 0;
+}
+
+.section-content {
+  background-color: #fafafa;
+  flex-grow: 1;
 }
 
 /******************************************************************************
@@ -75,20 +70,23 @@ body {
    display: flex;
    flex-direction: column;;
    flex-shrink: 0;
-   padding: 10px;
    width: 300px;
  }
 
 #branches {
   flex-grow: 1;
   list-style-type: none;
-  margin: 0 0 10px 0;
-  padding: 10px;
+}
 
+#branches .section-content {
+  flex-grow: 1;
   overflow-x: hidden;
   overflow-y: scroll;
+}
 
-  background-color: yellow;
+#branches ul.section-content {
+  margin: 0;
+  padding: 10px;
 }
 
 #branches i.fas {
@@ -103,47 +101,55 @@ body {
   font-weight: bold;
 }
 
+#commit .section-content {
+  background-color: #ddd;
+}
+
 #txtCommitTitle {
+  background-color: #fafafa;
   border: 0;
   height: 25px;
+  font-size: 14px;
   padding: 5px;
+  width: calc(100% - 10px);
 }
 
 #txtCommitMessage {
+  background-color: #fafafa;
   border: 0;
+  font-family: sans-serif;
+  font-size: 14px;
   height: 100px;
+  margin-bottom: -3px;
   margin-top: 10px;
   padding: 5px;
+  resize: none;
+  width: calc(100% - 10px);
 }
 
 
 /******************************************************************************
-****  rigth-bar section
+****  files section
 *****************************************************************************/
 
-#right-bar {
+#files {
   display: flex;
-  flex-direction: column;
-  flex-shrink: 0;
-  padding: 10px;
-  width: 300px;
+  flex-direction: row;
+}
+
+.file-list {
+  flex-basis: 0;
+  flex-grow: 1;
 }
 
 #wip {
-  flex-basis: 0;
-  flex-grow: 1;
-  margin-bottom: 10px;
+  height: 150px;
   padding: 0 10px;
-
-  border: solid 1px black;
 }
 
 #staging {
-  flex-basis: 0;
-  flex-grow: 1;
+  height: 150px;
   padding: 0 10px;
-
-  border: solid 1px black;
 }
 
 .file {
@@ -176,4 +182,28 @@ body {
 
 .updated-unmerged {
   color: red;
+}
+
+
+/******************************************************************************
+****  diff section
+*****************************************************************************/
+
+#diff {
+  flex-grow: 1;
+}
+
+#diff section-content {
+  overflow: scroll;
+}
+
+
+/******************************************************************************
+****  console section
+*****************************************************************************/
+
+#console {
+  background-color: black;
+  color: white;
+  height: 155px;
 }
