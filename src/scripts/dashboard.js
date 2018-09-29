@@ -97,13 +97,59 @@ function createFileLists() {
 }
 
 function createDiffSection() {
-  // git.diff((error, result) => {
-  //   if (!error) {
-  //     $('#diff .section-content').text(result);
-  //   } else {
-  //     console.log('An error ocurred');
-  //   }
-  // });
+  git.diff((error, result) => {
+    if (!error) {
+      // Cleans diff section
+      $('#diff .section-content').empty();
+
+      result = result.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+      let lines = result.split('\n');
+
+      for (let i = 0; i < lines.length; i++) {
+        let line = lines[i];
+
+        if (line.startsWith('index') || line.startsWith('+++') || line.startsWith('---') || line.startsWith('@@')) {
+          // Ignores de line
+          continue;
+        }
+
+        // File name
+        if (line.startsWith('diff --git')) {
+          // Cuts begin part
+          let fileName = line.slice(line.indexOf('a/'));
+
+          // Cuts end part
+          fileName = fileName.slice(2, fileName.indexOf(' '));
+
+          $('#diff .section-content').append('<div class="file-name">' + fileName + '</div>');
+        } else {
+
+          // TODO put all diff-line inside a container for each file
+
+          let classLine = ' class="diff-line';
+          let firstCharacter = 0;
+
+          if (line.startsWith('+')) {
+            classLine += ' line-added';
+            firstCharacter = 1;
+          } else if (line.startsWith('-')) {
+            classLine += ' line-deleted';
+            firstCharacter = 1;
+          }
+
+          classLine += '"';
+
+          let htmlLine = '<div' + classLine + '>' + line.slice(firstCharacter) + '</div>';
+
+          $('#diff .section-content').append(htmlLine);
+        }
+
+      }
+    } else {
+      console.log('An error ocurred');
+    }
+  });
 }
 
 function createFileElement(filePath, status, container) {
