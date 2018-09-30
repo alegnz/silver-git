@@ -4,6 +4,9 @@ $(document).ready(() => {
   $('#btnSavePath').click(initializeRepository);
 
   $('#btnChangePath').click(changeRepoVisibility);
+
+  $('#open-terminal').click(changeTerminalVisibility);
+  $('#btnMinimizeTerminal').click(changeTerminalVisibility);
 });
 
 function initializeRepository() {
@@ -57,6 +60,10 @@ function createBranchSection() {
           $('#localBranches').append(html);
         }
       });
+
+      // Sets current branch name in footer
+      console.log(branchSummary.current);
+      $('#current-branch span').text(branchSummary.current);
     } else {
       console.log('An error ocurred');
       console.log(error);
@@ -185,4 +192,8 @@ function changeRepoVisibility() {
   // Changes buttons' visibility
   $('#btnChangePath').toggleClass('hidden');
   $('#btnSavePath').toggleClass('hidden');
+}
+
+function changeTerminalVisibility() {
+  $('#terminal').toggleClass('hidden');
 }

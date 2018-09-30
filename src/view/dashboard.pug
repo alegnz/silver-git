@@ -49,13 +49,18 @@ div#dashboard-main
       div.section-content
         h1 This is the log section
       
-div#terminal
+div#terminal.hidden
   div#terminal-header
     span Terminal
-    i.far.fa-window-minimize
+    i#btnMinimizeTerminal.far.fa-window-minimize
     
   div.terminal-body alejandro@alePC:~/workspace/silver-git$
 
-div#footer    
+div#footer
+  div#open-terminal
+    i.fas.fa-terminal
+  div#current-branch
+    i.fas.fa-code-branch
+    span
 
 script(src="scripts/dashboard.js")
