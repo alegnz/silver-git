@@ -111,8 +111,6 @@ function createFileLists() {
 }
 
 function createDiffSection() {
-  console.log('diff section');
-
   git.diff((error, result) => {
     if (!error) {
 
@@ -224,7 +222,13 @@ function stageFile(aux) {
 }
 
 function unstageFile() {
-  console.log('UNSTAGE!');
+  let fileName = $(this).prev().text();
+  
+  git.reset(['HEAD', fileName], (error, result) => {
+    if (error) {
+      console.log('An error ocurred');
+    }
+  });
 
   refreshView();
 }
