@@ -5,8 +5,8 @@ $(document).ready(() => {
 
   $('#btnChangePath').click(changeRepoVisibility);
 
-  $('#btn-stage').click(stageFiles);
-  $('#btn-unstage').click(unstageFiles);
+  $('#btn-stage-all').click(stageAllFiles);
+  $('#btn-unstage-all').click(unstageAllFiles);
 
   $('#open-terminal').click(changeTerminalVisibility);
   $('#btnMinimizeTerminal').click(changeTerminalVisibility);
@@ -223,8 +223,34 @@ function stageFile(aux) {
 
 function unstageFile() {
   let fileName = $(this).prev().text();
-  
+
   git.reset(['HEAD', fileName], (error, result) => {
+    if (error) {
+      console.log('An error ocurred');
+    }
+  });
+
+  refreshView();
+}
+
+function stageAllFiles() {
+  // Finds all files in WIP section
+  let fileNames = [];
+  $('#wip span').each(function() {
+    fileNames.push($(this).text());
+  });
+
+  git.add(fileNames, (error, result) => {
+    if (error) {
+      console.log('An error ocurred');
+    }
+  });
+
+  refreshView();
+}
+
+function unstageAllFiles() {
+  git.reset(['HEAD'], (error, result) => {
     if (error) {
       console.log('An error ocurred');
     }
@@ -243,40 +269,6 @@ function changeRepoVisibility() {
   // Changes buttons' visibility
   $('#btnChangePath').toggleClass('hidden');
   $('#btnSavePath').toggleClass('hidden');
-}
-
-function stageFiles() {
-  let files = getSelectedFiles($('#wip'));
-
-  console.log(files);
-
-  // let resetCommand = 'git reset ';
-  // for (let i=0; i<files.length; i++) {
-  //
-  // }
-}
-
-function unstageFiles() {
-
-}
-
-function getSelectedFiles(listContainer) {
-  let files = [];
-
-  listContainer.children().each((index) => {
-    let div = this;
-
-    console.log(this);
-    console.log(this.find('input'));
-    let checkbox = this.find('input')[0];
-
-    if (checkbox.prop('checked')) {
-      let fileName = div.find('div')[0].text();
-      files.append(fileName);
-    } else {
-      console.log('No checkeado: ' + div.find('div')[0].text());
-    }
-  });
 }
 
 function changeTerminalVisibility() {
