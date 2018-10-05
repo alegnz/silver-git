@@ -5,6 +5,9 @@ $(document).ready(() => {
 
   $('#btnChangePath').click(changeRepoVisibility);
 
+  $('#btn-stage').click(stageFiles);
+  $('#btn-unstage').click(unstageFiles);
+
   $('#open-terminal').click(changeTerminalVisibility);
   $('#btnMinimizeTerminal').click(changeTerminalVisibility);
 });
@@ -21,6 +24,10 @@ function initializeRepository() {
 
   createBranchSection();
 
+  refreshView();
+}
+
+function refreshView() {
   createFileLists();
 
   createDiffSection();
@@ -104,8 +111,11 @@ function createFileLists() {
 }
 
 function createDiffSection() {
+  console.log('diff section');
+
   git.diff((error, result) => {
     if (!error) {
+
       // Cleans diff section
       $('#diff .section-content').empty();
 
@@ -177,9 +187,46 @@ function createFileElement(filePath, status, container) {
     statusClass = 'file updated-unmerged';
   }
 
-  let htmlPath = '<p class="' + statusClass + '">' + filePath + '</p>';
+  let buttonClass = 'btn btn-';
+  let buttonText;
+  if (container.prop('id') == 'wip') {
+    buttonClass += 'success';
+    buttonText = '+';
+  } else {
+    buttonClass += 'danger';
+    buttonText = '-';
+  }
 
-  container.append(htmlPath);
+  let fileName = $('<span></span>');
+  let button = $('<a></a>');
+  let fileContainer = $('<div></div>');
+
+  fileName.text(filePath);
+  button.text(buttonText);
+  button.addClass(buttonClass);
+  fileContainer.addClass(statusClass);
+
+  fileContainer.append(fileName, button);
+
+  if (container.prop('id') == 'wip') {
+    button.click(stageFile);
+  } else {
+    button.click(unstageFile);
+  }
+
+  container.append(fileContainer);
+}
+
+function stageFile(aux) {
+  git.add($(this).prev().text());
+
+  refreshView();
+}
+
+function unstageFile() {
+  console.log('UNSTAGE!');
+
+  refreshView();
 }
 
 function changeRepoVisibility() {
@@ -192,6 +239,40 @@ function changeRepoVisibility() {
   // Changes buttons' visibility
   $('#btnChangePath').toggleClass('hidden');
   $('#btnSavePath').toggleClass('hidden');
+}
+
+function stageFiles() {
+  let files = getSelectedFiles($('#wip'));
+
+  console.log(files);
+
+  // let resetCommand = 'git reset ';
+  // for (let i=0; i<files.length; i++) {
+  //
+  // }
+}
+
+function unstageFiles() {
+
+}
+
+function getSelectedFiles(listContainer) {
+  let files = [];
+
+  listContainer.children().each((index) => {
+    let div = this;
+
+    console.log(this);
+    console.log(this.find('input'));
+    let checkbox = this.find('input')[0];
+
+    if (checkbox.prop('checked')) {
+      let fileName = div.find('div')[0].text();
+      files.append(fileName);
+    } else {
+      console.log('No checkeado: ' + div.find('div')[0].text());
+    }
+  });
 }
 
 function changeTerminalVisibility() {
