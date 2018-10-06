@@ -30,7 +30,7 @@ function initializeRepository() {
 function refreshView() {
   createFileLists();
 
-  createDiffSection();
+  setDiffSectionContent();
 }
 
 function createBranchSection() {
@@ -110,8 +110,20 @@ function createFileLists() {
   });
 }
 
-function createDiffSection() {
-  git.diff((error, result) => {
+function setDiffSectionContent(file, cached) {
+  let diffParams = [];
+
+  // Shows diff in staging area
+  if (cached) {
+    diffParams.push('--cached');
+  }
+
+  // If it receives a file, shows only that file
+  if (file) {
+    diffParams.push(file);
+  }
+
+  git.diff(diffParams, (error, result) => {
     if (!error) {
 
       // Cleans diff section
@@ -206,6 +218,8 @@ function createFileElement(filePath, status, container) {
 
   fileContainer.append(fileName, button);
 
+  fileContainer.click(fileSelected);
+
   if (container.prop('id') == 'wip') {
     button.click(stageFile);
   } else {
@@ -215,10 +229,22 @@ function createFileElement(filePath, status, container) {
   container.append(fileContainer);
 }
 
+function fileSelected() {
+  let fileName = $(this).children('span')[0].innerText;
+
+  // If it's in staging area it must use "git diff --cached" option
+  let cached = $(this).parent().prop('id') == 'staging';
+
+  setDiffSectionContent(fileName, cached);
+}
+
 function stageFile(aux) {
   git.add($(this).prev().text());
 
   refreshView();
+
+  // Stops event propagation
+  return false;
 }
 
 function unstageFile() {
@@ -231,6 +257,9 @@ function unstageFile() {
   });
 
   refreshView();
+
+  // Stops event propagation
+  return false;
 }
 
 function stageAllFiles() {
