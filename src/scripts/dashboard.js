@@ -1,4 +1,4 @@
-const git = require('simple-git')();
+const Workspace = require('./git_workspace/workspace.js');
 
 $(document).ready(() => {
   $('#btnSavePath').click(initializeRepository);
@@ -15,22 +15,20 @@ $(document).ready(() => {
 function initializeRepository() {
   let path = $('#txtPath').val();
 
-  // TODO check if it's a git repo
-  if (path != '') {
-    git.cwd(path);
-  }
-
   changeRepoVisibility();
 
-  createBranchSection();
+  workspace = new Workspace(path);
 
-  refreshView();
+  workspace.initialize().then(() => {
+    createBranchSection();
+    refreshView();
+  });
 }
 
 function refreshView() {
   createFileLists();
 
-  setDiffSectionContent();
+  workspace.getDiffAll().then(result => createDiffContent(result));
 }
 
 function createBranchSection() {
@@ -39,163 +37,104 @@ function createBranchSection() {
   $('#remoteBranches').empty();
   $('#tags').empty();
 
-  // Shows local and remote branches
-  git.branch((error, branchSummary) => {
-    if (!error) {
-      branchSummary.all.forEach((branchName) => {
-        if (branchName.startsWith("remotes/")) {
-          let parts = branchName.split('/');
+  let currentBranch = workspace.getCurrentBranch();
 
-          let remoteName = parts[1];
+  // Sets current branch name in footer
+  $('#current-branch span').text(currentBranch);
 
-          // If there isn't a remote element with that name yet, it creates one
-          if ($('#remote-' + remoteName).length == 0) {
-            let html = '<li>' + remoteName + '<ul id="remote-' + remoteName + '"></ul></li>';
+  // Shows local branches
+  workspace.getLocalBranches().forEach(branchName => {
+    let className = branchName == currentBranch ? 'current-branch' : '';
 
-            $('#remoteBranches').append(html);
-          }
+    let html = '<li class="' + className + '"><i class="fas fa-code-branch"></i>' + branchName + '</li>';
 
-          // Removes "remotes" string and remote name
-          parts.splice(0, 2);
+    $('#localBranches').append(html);
+  });
 
-          let remoteBranchName = parts.join('/');
-          $('#remote-' + remoteName).append('<li><i class="fas fa-code-branch"></i>' + remoteBranchName + '</li>')
-        } else {
-          let html = '<li' + (branchName == branchSummary.current ? ' class="current-branch"' : '') + '>'
-              + '<i class="fas fa-code-branch"></i>' + branchName + '</li>';
+  // Shows remotes
+  workspace.getRemotes().forEach(remote => {
+    let html = '<li>' + remote.name + '<ul id="remote-' + remote.name + '"></ul></li>';
+    $('#remoteBranches').append(html);
 
-          $('#localBranches').append(html);
-        }
-      });
-
-      // Sets current branch name in footer
-      console.log(branchSummary.current);
-      $('#current-branch span').text(branchSummary.current);
-    } else {
-      console.log('An error ocurred');
-      console.log(error);
-    }
+    // Shows remote branches
+    remote.getBranches().forEach((branchName) => {
+      $('#remote-' + remote.name).append('<li><i class="fas fa-code-branch"></i>' + branchName + '</li>');
+    });
   });
 
   // Shows tags
-  git.tags((error, tagList) => {
-    if (!error) {
-      tagList.all.forEach((tagName) => {
-        $('#tags').append('<li>' + tagName + '</li>');
-      });
-    }
+  workspace.getTags().forEach(tagName => {
+    $('#tags').append('<li>' + tagName + '</li>');
   });
 }
 
 function createFileLists() {
-  git.status((error, statusSummary) => {
+  $('#wip').empty();
+  $('#staging').empty();
 
-    if (!error) {
-      // Cleans wip and staging areas
-      $('#wip').empty();
-      $('#staging').empty();
+  workspace.getFiles().forEach(file => {
+    if (file.hasChangedInIndex()) {
+      createFileElement(file.getPath(), file.getIndexStatus().desc, $('#staging'));
+    }
 
-      statusSummary.files.forEach((fileStatusSummary) => {
-        if (fileStatusSummary.working_dir != ' ') {
-          createFileElement(fileStatusSummary.path, fileStatusSummary.working_dir, $('#wip'));
-        }
-
-        if (fileStatusSummary.index != ' ' && fileStatusSummary.index != '?') {
-          createFileElement(fileStatusSummary.path, fileStatusSummary.index, $('#staging'));
-        }
-      });
-    } else {
-      console.log('An error ocurred');
+    if (file.hasChangedInWorkingDir()) {
+      createFileElement(file.getPath(), file.getWorkingDirStatus().desc, $('#wip'));
     }
   });
 }
 
-function setDiffSectionContent(file, cached) {
-  let diffParams = [];
+function createDiffContent(diffString) {
+  // Cleans diff section
+  $('#diff .section-content').empty();
 
-  // Shows diff in staging area
-  if (cached) {
-    diffParams.push('--cached');
-  }
+  // Replace symbols to avoid show text as html
+  diffString = diffString.replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
-  // If it receives a file, shows only that file
-  if (file) {
-    diffParams.push(file);
-  }
+  let lines = diffString.split('\n');
+  for (let i = 0; i < lines.length; i++) {
+    let line = lines[i];
 
-  git.diff(diffParams, (error, result) => {
-    if (!error) {
-
-      // Cleans diff section
-      $('#diff .section-content').empty();
-
-      result = result.replace(/</g, '&lt;').replace(/>/g, '&gt;');
-
-      let lines = result.split('\n');
-
-      for (let i = 0; i < lines.length; i++) {
-        let line = lines[i];
-
-        if (line.startsWith('index') || line.startsWith('+++') || line.startsWith('---') || line.startsWith('@@')) {
-          // Ignores de line
-          continue;
-        }
-
-        // File name
-        if (line.startsWith('diff --git')) {
-          // Cuts begin part
-          let fileName = line.slice(line.indexOf('a/'));
-
-          // Cuts end part
-          fileName = fileName.slice(2, fileName.indexOf(' '));
-
-          $('#diff .section-content').append('<div class="file-name">' + fileName + '</div>');
-        } else {
-
-          // TODO put all diff-line inside a container for each file
-
-          let classLine = ' class="diff-line';
-          let firstCharacter = 0;
-
-          if (line.startsWith('+')) {
-            classLine += ' line-added';
-            firstCharacter = 1;
-          } else if (line.startsWith('-')) {
-            classLine += ' line-deleted';
-            firstCharacter = 1;
-          }
-
-          classLine += '"';
-
-          let htmlLine = '<div' + classLine + '>' + line.slice(firstCharacter) + '</div>';
-
-          $('#diff .section-content').append(htmlLine);
-        }
-
-      }
-    } else {
-      console.log('An error ocurred');
+    if (line.startsWith('index') || line.startsWith('+++') || line.startsWith('---') || line.startsWith('@@')) {
+      // Ignores de line
+      continue;
     }
-  });
+
+    // File name
+    if (line.startsWith('diff --git')) {
+      // Cuts begin part
+      let fileName = line.slice(line.indexOf('a/'));
+
+      // Cuts end part
+      fileName = fileName.slice(2, fileName.indexOf(' '));
+
+      $('#diff .section-content').append('<div class="file-name">' + fileName + '</div>');
+    } else {
+
+      // TODO put all diff-line inside a container for each file
+
+      let classLine = ' class="diff-line';
+      let firstCharacter = 0;
+
+      if (line.startsWith('+')) {
+        classLine += ' line-added';
+        firstCharacter = 1;
+      } else if (line.startsWith('-')) {
+        classLine += ' line-deleted';
+        firstCharacter = 1;
+      }
+
+      classLine += '"';
+
+      let htmlLine = '<div' + classLine + '>' + line.slice(firstCharacter) + '</div>';
+
+      $('#diff .section-content').append(htmlLine);
+    }
+
+  }
 }
 
 function createFileElement(filePath, status, container) {
-  let statusClass;
-  if (status == '?') {
-    statusClass = 'file untracked';
-  } else if (status == 'M') {
-    statusClass = 'file modified';
-  } else if (status == 'A') {
-    statusClass = 'file added';
-  } else if (status == 'D') {
-    statusClass = 'file deleted';
-  } else if (status = 'R') {
-    statusClass = 'file renamed';
-  } else if (status == 'C') {
-    statusClass = 'file copied';
-  } else if (status = 'U') {
-    statusClass = 'file updated-unmerged';
-  }
+  let statusClass = 'file ' + status;
 
   let buttonClass = 'btn btn-';
   let buttonText;
@@ -232,16 +171,21 @@ function createFileElement(filePath, status, container) {
 function fileSelected() {
   let fileName = $(this).children('span')[0].innerText;
 
-  // If it's in staging area it must use "git diff --cached" option
-  let cached = $(this).parent().prop('id') == 'staging';
+  let diffFunction;
+  if ($(this).parent().prop('id') == 'staging') {
+    diffFunction = workspace.getDiffIndex(fileName);
+  } else {
+    diffFunction = workspace.getDiffWorkingDir(fileName);
+  }
 
-  setDiffSectionContent(fileName, cached);
+  diffFunction.then(result => createDiffContent(result));
 }
 
 function stageFile(aux) {
-  git.add($(this).prev().text());
+  let fileName = $(this).prev().text();
 
-  refreshView();
+  workspace.stageFile(fileName)
+    .then(() => refreshView());
 
   // Stops event propagation
   return false;
@@ -250,42 +194,21 @@ function stageFile(aux) {
 function unstageFile() {
   let fileName = $(this).prev().text();
 
-  git.reset(['HEAD', fileName], (error, result) => {
-    if (error) {
-      console.log('An error ocurred');
-    }
-  });
-
-  refreshView();
+  workspace.unstageFile(fileName)
+    .then(() => refreshView());
 
   // Stops event propagation
   return false;
 }
 
 function stageAllFiles() {
-  // Finds all files in WIP section
-  let fileNames = [];
-  $('#wip span').each(function() {
-    fileNames.push($(this).text());
-  });
-
-  git.add(fileNames, (error, result) => {
-    if (error) {
-      console.log('An error ocurred');
-    }
-  });
-
-  refreshView();
+  workspace.stageAllFiles()
+    .then(() => refreshView());
 }
 
 function unstageAllFiles() {
-  git.reset(['HEAD'], (error, result) => {
-    if (error) {
-      console.log('An error ocurred');
-    }
-  });
-
-  refreshView();
+  workspace.unstageAllFiles()
+    .then(() => refreshView());
 }
 
 function changeRepoVisibility() {
