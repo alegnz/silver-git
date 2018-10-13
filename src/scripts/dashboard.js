@@ -67,7 +67,7 @@ function createBranchSection() {
 
   // Shows local branches
   workspace.getLocalBranches().forEach(branchName => {
-    let className = branchName == currentBranch ? 'current-branch' : '';
+    let className = 'hoverable' + (branchName == currentBranch ? ' current-branch' : '');
 
     let html = '<li class="' + className + '"><i class="fas fa-code-branch"></i>' + branchName + '</li>';
 
@@ -77,7 +77,7 @@ function createBranchSection() {
   // Shows remotes
   workspace.getRemotes().forEach(remote => {
     let html =
-      '<div class="accordion-header">' +
+      '<div class="accordion-header hoverable">' +
       '<i class="fas fa-caret-down""></i>' +
       '<i class="fas fa-caret-right"></i>' +
       remote.name +
@@ -88,7 +88,7 @@ function createBranchSection() {
 
     // Shows remote branches
     remote.getBranches().forEach((branchName) => {
-      $('#remote-' + remote.name).append('<li><i class="fas fa-code-branch"></i>' + branchName + '</li>');
+      $('#remote-' + remote.name).append('<li class="hoverable"><i class="fas fa-code-branch"></i>' + branchName + '</li>');
     });
   });
 
@@ -97,7 +97,7 @@ function createBranchSection() {
 
   // Shows tags
   workspace.getTags().forEach(tagName => {
-    $('#tags').append('<li>' + tagName + '</li>');
+    $('#tags').append('<li class="hoverable">' + tagName + '</li>');
   });
 
   // Expands accordion sections
@@ -123,7 +123,7 @@ function createStashList() {
   $('#stash .section-content').empty();
 
   workspace.getStashes().forEach(stashMessage => {
-    let html = '<div>' +
+    let html = '<div class="hoverable">' +
       '<i class="fas fa-archive"></i>' +
       stashMessage +
       '</div>';
@@ -186,7 +186,7 @@ function createDiffContent(diffString) {
 }
 
 function createFileElement(filePath, status, container) {
-  let statusClass = 'file ' + status;
+  let statusClass = 'file hoverable ' + status;
 
   let buttonClass = 'btn btn-';
   let buttonText;
@@ -224,10 +224,20 @@ function fileSelected() {
   let fileName = $(this).children('span')[0].innerText;
 
   let diffFunction;
-  if ($(this).parent().prop('id') == 'staging') {
-    diffFunction = workspace.getDiffIndex(fileName);
+  if ($(this).hasClass('selected')) {
+    // If the file was selected, unselect it and shows all files in diff section
+    $(this).removeClass('selected');
+    diffFunction = workspace.getDiffAll();
   } else {
-    diffFunction = workspace.getDiffWorkingDir(fileName);
+    // If the file wasn't selected, unselect other files and shows only the selected file
+    $('.file').removeClass('selected');
+    $(this).addClass('selected');
+
+    if ($(this).parent().prop('id') == 'staging') {
+      diffFunction = workspace.getDiffIndex(fileName);
+    } else {
+      diffFunction = workspace.getDiffWorkingDir(fileName);
+    }
   }
 
   diffFunction.then(result => createDiffContent(result));

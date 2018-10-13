@@ -46,6 +46,14 @@ body {
   background-color: rgba(255, 0, 0, 0.4);
 }
 
+.hoverable:hover {
+  background-color: #e5e5e5;
+}
+
+.hoverable.selected {
+  background-color: #e1e1e1;
+}
+
 /* Accordion pattern */
 .accordion-header {
   cursor: pointer;
@@ -204,8 +212,11 @@ body {
 
 #branches .accordion-body {
   margin: 0;
-  margin-left: 20px;
   padding: 0;
+}
+
+#branches .accordion-body li {
+  padding-left: 20px;
 }
 
 #branches ul li {
@@ -230,7 +241,7 @@ body {
 
 #stash .section-content div {
   overflow: hidden;
-  padding: 2px 5px;
+  padding: 5px;
   text-overflow: ellipsis;
   white-space: nowrap;
   width: 270px;
@@ -314,7 +325,6 @@ body {
 
 #staging {
   height: 150px;
-  padding: 0 10px;
 }
 
 .file {
