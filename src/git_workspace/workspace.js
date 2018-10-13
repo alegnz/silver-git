@@ -204,7 +204,7 @@ class Workspace {
   async unstageFile(filePath) {
     // Unstages the file
     try {
-      await simpleGit.reset(['HEAD', fileName]);
+      await simpleGit.reset(['HEAD', filePath]);
     } catch (err) {
       console.error(err);
     }

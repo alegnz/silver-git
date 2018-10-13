@@ -345,41 +345,66 @@ body {
   position: absolute;
   right: 10px;
   text-align: center;
-  top: 40px;
+  top: 50px;
   width: 18px;
 }
 
 .file:hover .btn {
-  top: 8px;
+  top: 11px;
   transition: top 0.3s;
 }
 
-.untracked span {
-  color: orange;
-}
-
-.added span {
-  color: green;
-}
-
-.modified span {
+.file span::before {
+  border: 2px solid;
+  border-radius: 3px;
   color: blue;
+  content: 'M';
+  display: inline-block;
+  margin-right: 3px;
+  text-align: center;
+  width: 20px;
 }
 
-.deleted span {
+.untracked span::before {
+  border-color: orange;
+  color: orange;
+  content: '?';
+}
+
+.added span::before {
+  border-color: green;
+  color: green;
+  content: 'A';
+}
+
+.modified span::before {
+  border-color: blue;
+  color: blue;
+  content: 'M';
+}
+
+.deleted span::before {
+  border-color: red;
   color: red;
+  content: 'D';
 }
 
-.renamed span {
+.renamed span::before {
+  border-color: brown;
   color: brown;
+  content: 'R';
 }
 
-.copied span {
+.copied span::before {
+  border-color: brown;
   color: brown;
+  content: 'C';
 }
 
-.updated-unmerged span {
+.updated-unmerged span::before {
+  border-color: red;
   color: red;
+  content: 'U';
 }
 
 /******************************************************************************
