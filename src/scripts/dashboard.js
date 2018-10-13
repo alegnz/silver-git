@@ -5,6 +5,8 @@ $(document).ready(() => {
 
   $('#btnChangePath').click(changeRepoVisibility);
 
+  $('#branches .collapsible').click(changeBranchListVisibility);
+
   $('#btn-stage-all').click(stageAllFiles);
   $('#btn-unstage-all').click(unstageAllFiles);
 
@@ -23,6 +25,26 @@ function initializeRepository() {
     createBranchSection();
     refreshView();
   });
+}
+
+function changeRepoVisibility() {
+  if ($('#txtPath').attr('disabled')) {
+    $('#txtPath').removeAttr('disabled');
+
+    $('#localBranches').addClass('collapsed');
+    $('#remoteBranches').addClass('collapsed');
+    $('#tags').addClass('collapsed');
+  } else {
+    $('#txtPath').attr('disabled', 'disabled');
+  }
+
+  // Changes buttons' visibility
+  $('#btnChangePath').toggleClass('hidden');
+  $('#btnSavePath').toggleClass('hidden');
+}
+
+function changeBranchListVisibility() {
+  $(this).next().toggleClass('collapsed');
 }
 
 function refreshView() {
@@ -49,12 +71,14 @@ function createBranchSection() {
     let html = '<li class="' + className + '"><i class="fas fa-code-branch"></i>' + branchName + '</li>';
 
     $('#localBranches').append(html);
+    $('#localBranches').removeClass('collapsed');
   });
 
   // Shows remotes
   workspace.getRemotes().forEach(remote => {
-    let html = '<li>' + remote.name + '<ul id="remote-' + remote.name + '"></ul></li>';
+    let html = '<div class="collapsible">' + remote.name + '</div><ul id="remote-' + remote.name + '"></ul>';
     $('#remoteBranches').append(html);
+    $('#remoteBranches').removeClass('collapsed');
 
     // Shows remote branches
     remote.getBranches().forEach((branchName) => {
@@ -62,9 +86,13 @@ function createBranchSection() {
     });
   });
 
+  // Add click event to collapsible remote name elements
+  $('#remoteBranches .collapsible').click(changeBranchListVisibility);
+
   // Shows tags
   workspace.getTags().forEach(tagName => {
     $('#tags').append('<li>' + tagName + '</li>');
+    $('#tags').removeClass('collapsed');
   });
 }
 
@@ -209,18 +237,6 @@ function stageAllFiles() {
 function unstageAllFiles() {
   workspace.unstageAllFiles()
     .then(() => refreshView());
-}
-
-function changeRepoVisibility() {
-  if ($('#txtPath').attr('disabled')) {
-    $('#txtPath').removeAttr('disabled')
-  } else {
-    $('#txtPath').attr('disabled', 'disabled');
-  }
-
-  // Changes buttons' visibility
-  $('#btnChangePath').toggleClass('hidden');
-  $('#btnSavePath').toggleClass('hidden');
 }
 
 function changeTerminalVisibility() {

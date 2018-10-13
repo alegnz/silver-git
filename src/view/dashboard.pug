@@ -8,16 +8,16 @@ div#dashboard-main
     // BRANCHES SECTION
     div#branches.section
       p.section-title Branches
-      ul.section-content
-        li 
+      div.section-content
+        div.collapsible
           i.fas.fa-desktop/ Local
-          ul#localBranches
-        li
+        ul#localBranches.collapsed
+        div.collapsible
           i.fas.fa-cloud/ Remote
-          ul#remoteBranches
-        li
+        div#remoteBranches.collapsed
+        div.collapsible
           i.fa.fa-tags/ Tags
-          ul#tags
+        ul#tags.collapsed
     
     // COMMIT SECTION
     div#commit.section
