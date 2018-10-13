@@ -143,10 +143,12 @@ function createDiffContent(diffString) {
   for (let i = 0; i < lines.length; i++) {
     let line = lines[i];
 
-    if (line.startsWith('index') || line.startsWith('+++') || line.startsWith('---') || line.startsWith('@@')) {
+    if (line.startsWith('index') || line.startsWith('+++') || line.startsWith('---')) {
       // Ignores de line
       continue;
     }
+
+    let htmlLine;
 
     // File name
     if (line.startsWith('diff --git')) {
@@ -156,7 +158,9 @@ function createDiffContent(diffString) {
       // Cuts end part
       fileName = fileName.slice(2, fileName.indexOf(' '));
 
-      $('#diff .section-content').append('<div class="file-name">' + fileName + '</div>');
+      htmlLine = '<div class="file-name">' + fileName + '</div>';
+    } else if (line.startsWith('@@')) {
+      htmlLine = '<div class="chunk-header">' + line + '</div>';
     } else {
 
       // TODO put all diff-line inside a container for each file
@@ -174,11 +178,10 @@ function createDiffContent(diffString) {
 
       classLine += '"';
 
-      let htmlLine = '<div' + classLine + '>' + line.slice(firstCharacter) + '</div>';
-
-      $('#diff .section-content').append(htmlLine);
+      htmlLine = '<div' + classLine + '>' + line.slice(firstCharacter) + '</div>';
     }
 
+    $('#diff .section-content').append(htmlLine);
   }
 }
 

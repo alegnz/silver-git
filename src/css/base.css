@@ -384,8 +384,25 @@ body {
 }
 
 .file-name {
+  background-color: #ccc;
   font-weight: bold;
   padding: 10px;
+}
+
+.file-name:not(:first-child) {
+  margin-top: 20px;
+}
+
+.chunk-header {
+  border-bottom: 1px solid #aaa;
+  color: #444;
+  font-size: 14px;
+  margin: 20px 0 10px 0;
+  padding: 5px 10px;
+}
+
+.file-name+.chunk-header {
+  margin-top: 10px;
 }
 
 .diff-line {
@@ -396,11 +413,11 @@ body {
 }
 
 .line-added {
-  background-color: green;
+  background-color: #49b949;
 }
 
 .line-deleted {
-  background-color: red;
+  background-color: #e62727;
 }
 
 /******************************************************************************
