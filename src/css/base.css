@@ -47,13 +47,17 @@ body {
 }
 
 /* Accordion pattern */
-.collapsible+* {
+.accordion-header {
+  cursor: pointer;
+}
+
+.accordion-body {
   box-sizing: border-box;
   height: 100%;
   overflow: hidden;
 }
 
-.collapsible+*.collapsed {
+.accordion-header.collapsed+.accordion-body {
   height: 0;
 }
 
@@ -153,7 +157,6 @@ body {
 }
 
 #branches {
-  /* flex-grow: 1; */
   list-style-type: none;
 }
 
@@ -163,24 +166,43 @@ body {
   overflow-y: scroll;
 }
 
-#branches .collapsible {
+#branches .accordion-header {
   margin: 0;
   padding: 10px;
 }
 
-#branches .section-content>.collapsible {
+#branches .section-content>.accordion-header {
   background-color: #ccc;
 }
 
-#branches .section-content>.collapsible:not(:first-child) {
+#branches .section-content>.accordion-header:not(:first-child) {
   border-top: 1px solid #aaa;
 }
 
-#remoteBranches .collapsible {
-  padding: 0;
+/* remote name */
+#remoteBranches .accordion-header {
+  padding: 2px;
+  position: relative;
 }
 
-#branches .collapsible+* {
+#remoteBranches .accordion-header .fa-caret-down,
+#remoteBranches .accordion-header .fa-caret-right {
+  width: 10px;
+}
+
+#remoteBranches .accordion-header.collapsed .fa-caret-down {
+  display: none;
+}
+
+#remoteBranches .accordion-header:not(.collapsed) .fa-caret-right {
+  display: none;
+}
+
+.accordion-body.collapsed~.remote-name {
+  display: none;
+}
+
+#branches .accordion-body {
   margin: 0;
   margin-left: 20px;
   padding: 0;

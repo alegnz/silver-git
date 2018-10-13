@@ -5,7 +5,7 @@ $(document).ready(() => {
 
   $('#btnChangePath').click(changeRepoVisibility);
 
-  $('#branches .collapsible').click(changeBranchListVisibility);
+  $('#branches .accordion-header').click(changeBranchListVisibility);
 
   $('#btn-stage-all').click(stageAllFiles);
   $('#btn-unstage-all').click(unstageAllFiles);
@@ -44,7 +44,7 @@ function changeRepoVisibility() {
 }
 
 function changeBranchListVisibility() {
-  $(this).next().toggleClass('collapsed');
+  $(this).toggleClass('collapsed');
 }
 
 function refreshView() {
@@ -71,14 +71,19 @@ function createBranchSection() {
     let html = '<li class="' + className + '"><i class="fas fa-code-branch"></i>' + branchName + '</li>';
 
     $('#localBranches').append(html);
-    $('#localBranches').removeClass('collapsed');
   });
 
   // Shows remotes
   workspace.getRemotes().forEach(remote => {
-    let html = '<div class="collapsible">' + remote.name + '</div><ul id="remote-' + remote.name + '"></ul>';
+    let html =
+      '<div class="accordion-header">' +
+      '<i class="fas fa-caret-down""></i>' +
+      '<i class="fas fa-caret-right"></i>' +
+      remote.name +
+      '</div> ' +
+      '<ul id="remote-' + remote.name + '" class="accordion-body"></ul>';
+
     $('#remoteBranches').append(html);
-    $('#remoteBranches').removeClass('collapsed');
 
     // Shows remote branches
     remote.getBranches().forEach((branchName) => {
@@ -86,14 +91,16 @@ function createBranchSection() {
     });
   });
 
-  // Add click event to collapsible remote name elements
-  $('#remoteBranches .collapsible').click(changeBranchListVisibility);
+  // Add click event to accordion-header remote name elements
+  $('#remoteBranches .accordion-header').click(changeBranchListVisibility);
 
   // Shows tags
   workspace.getTags().forEach(tagName => {
     $('#tags').append('<li>' + tagName + '</li>');
-    $('#tags').removeClass('collapsed');
   });
+
+  // Expands accordion sections
+  $('#branches .section-content>.accordion-header').removeClass('collapsed');
 }
 
 function createFileLists() {

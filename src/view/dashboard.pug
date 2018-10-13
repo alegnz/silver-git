@@ -9,15 +9,17 @@ div#dashboard-main
     div#branches.section
       p.section-title Branches
       div.section-content
-        div.collapsible
+        div.accordion-header.collapsed
           i.fas.fa-desktop/ Local
-        ul#localBranches.collapsed
-        div.collapsible
+        ul#localBranches.accordion-body
+          
+        div.accordion-header.collapsed
           i.fas.fa-cloud/ Remote
-        div#remoteBranches.collapsed
-        div.collapsible
+        div#remoteBranches.accordion-body
+          
+        div.accordion-header.collapsed
           i.fa.fa-tags/ Tags
-        ul#tags.collapsed
+        ul#tags.accordion-body
     
     // COMMIT SECTION
     div#commit.section
