@@ -49,6 +49,7 @@ function changeBranchListVisibility() {
 
 function refreshView() {
   createFileLists();
+  createStashList();
 
   workspace.getDiffAll().then(result => createDiffContent(result));
 }
@@ -116,6 +117,19 @@ function createFileLists() {
       createFileElement(file.getPath(), file.getWorkingDirStatus().desc, $('#wip'));
     }
   });
+}
+
+function createStashList() {
+  $('#stash .section-content').empty();
+
+  workspace.getStashes().forEach(stashMessage => {
+    let html = '<div>' +
+      '<i class="fas fa-archive"></i>' +
+      stashMessage +
+      '</div>';
+
+    $('#stash .section-content').append(html);
+  })
 }
 
 function createDiffContent(diffString) {

@@ -16,6 +16,7 @@ class Workspace {
     this.currentBranch;
     this.localBranches = [];
     this.tags = [];
+    this.stashes = [];
 
     this.remotes = new Map();
     this.files = new Map();
@@ -25,9 +26,13 @@ class Workspace {
     await this._initializeBranches();
     await this._initializeTags();
     await this._initializeFiles();
+    await this._initializeStashes();
   }
 
   async _initializeBranches() {
+    this.localBranches = [];
+    this.remotes.clear();
+
     // Gets branches
     let branchSummary = null;
     try {
@@ -37,7 +42,7 @@ class Workspace {
       return;
     }
 
-    branchSummary.all.forEach((name) => {
+    branchSummary.all.forEach(name => {
       if (name.startsWith("remotes/")) {
         // Remote branches
         let [, remoteName, branchName] = name.split('/');
@@ -62,6 +67,8 @@ class Workspace {
   }
 
   async _initializeTags() {
+    this.tags = [];
+
     // Gets tags
     let tagList = null;
     try {
@@ -71,9 +78,7 @@ class Workspace {
       return;
     }
 
-    tagList.all.forEach((tagName) => {
-      this.tags.push(tagName);
-    });
+    tagList.all.forEach(tagName => this.tags.push(tagName));
   }
 
   async _initializeFiles() {
@@ -87,7 +92,7 @@ class Workspace {
       return;
     }
 
-    statusSummary.files.forEach((fileStatusSummary) => {
+    statusSummary.files.forEach(fileStatusSummary => {
       let indexStatus = GitStatus.getByGitTag(fileStatusSummary.index);
       let workingDirStatus = GitStatus.getByGitTag(fileStatusSummary.working_dir);
 
@@ -95,6 +100,20 @@ class Workspace {
 
       this.files.set(file.getPath(), file);
     });
+  }
+
+  async _initializeStashes() {
+    this.stashes = [];
+
+    let listLogSummary = null;
+    try {
+      listLogSummary = await simpleGit.stashList();
+    } catch (err) {
+      console.error(err);
+      return;
+    }
+
+    listLogSummary.all.forEach(listLogLine => this.stashes.push(listLogLine.message));
   }
 
   getCurrentBranch() {
@@ -115,6 +134,10 @@ class Workspace {
 
   getFiles() {
     return this.files;
+  }
+
+  getStashes() {
+    return this.stashes;
   }
 
   async getDiffAll() {

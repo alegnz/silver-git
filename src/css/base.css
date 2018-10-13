@@ -224,6 +224,22 @@ body {
   font-weight: bold;
 }
 
+#stash {
+  flex-grow: 1;
+}
+
+#stash .section-content div {
+  overflow: hidden;
+  padding: 2px 5px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  width: 270px;
+}
+
+#stash .section-content div i.fas {
+  margin-right: 5px;
+}
+
 #commit {
   flex-shrink: 0;
 }
