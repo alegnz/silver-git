@@ -53,7 +53,7 @@ function refreshView() {
   createFileLists();
   createStashList();
 
-  workspace.getDiffAll().then(result => createDiffContent(result));
+  workspace.getDiffAll().then(result => createDiffContent(result, true));
 }
 
 function createBranchSection() {
@@ -134,9 +134,17 @@ function createStashList() {
   })
 }
 
-function createDiffContent(diffString) {
+function createDiffContent(diffString, workingDirectory) {
   // Cleans diff section
   $('#diff .section-content').empty();
+
+  // If there is no lines, the working directory is clean
+  if (workingDirectory && diffString.length == 0) {
+    let htmlNoContent = '<div class="no-content"><div>Working directory clean</div></div>';
+
+    $('#diff .section-content').append(htmlNoContent);
+    return;
+  }
 
   // Replace symbols to avoid show text as html
   diffString = diffString.replace(/</g, '&lt;').replace(/>/g, '&gt;');

@@ -480,6 +480,22 @@ body {
 
 #diff .section-content {
   overflow: scroll;
+  display: flex;
+  flex-direction: column;
+}
+
+.no-content {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  justify-content: center;
+}
+
+.no-content div {
+  color: #ccc;
+  font-size: 36px;
+  font-style: italic;
+  text-align: center;
 }
 
 .file-name {
