@@ -113,7 +113,12 @@ class Workspace {
       return;
     }
 
-    listLogSummary.all.forEach(listLogLine => this.stashes.push(listLogLine.message));
+    listLogSummary.all.forEach(listLogLine => {
+      // Removes refs/stash message
+      let stashMessage = listLogLine.message.replace(' (refs/stash)', '');
+
+      this.stashes.push(stashMessage);
+    });
   }
 
   getCurrentBranch() {
@@ -223,6 +228,14 @@ class Workspace {
 
     // Refreshes files
     await this._initializeFiles();
+  }
+
+  async stash(stashMessage) {
+    await simpleGit.stash(['save', stashMessage]);
+
+    // Refreshes file and stash lists
+    await this._initializeFiles();
+    await this._initializeStashes();
   }
 }
 

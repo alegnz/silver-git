@@ -7,8 +7,10 @@ $(document).ready(() => {
 
   $('#branches .accordion-header').click(changeBranchListVisibility);
 
+  // Header buttons
   $('#btn-stage-all').click(stageAllFiles);
   $('#btn-unstage-all').click(unstageAllFiles);
+  $('#btn-stash').click(stashWorkingDirectory);
 
   $('#open-terminal').click(changeTerminalVisibility);
   $('#btnMinimizeTerminal').click(changeTerminalVisibility);
@@ -270,6 +272,14 @@ function stageAllFiles() {
 
 function unstageAllFiles() {
   workspace.unstageAllFiles()
+    .then(() => refreshView());
+}
+
+function stashWorkingDirectory() {
+  // Uses commit title content as stash message
+  let message = $('#txtCommitTitle').val();
+
+  workspace.stash(message)
     .then(() => refreshView());
 }
 
