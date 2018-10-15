@@ -29,23 +29,40 @@ body {
 .btn {
   border: solid 1.3px black;
   border-radius: 1.5px;
+  color: #fff;
   cursor: pointer;
   padding: 1px 3px;
+  transition-duration: 0.1s;
 }
 
 .btn-primary {
-  border-color: blue;
-  background-color: rgba(0, 0, 255, 0.4);
+  background-color: #007bff;
+  border-color: #007bff;
+}
+
+.btn-primary:hover {
+  background-color: #0069d9;
+  border-color: #0062cc;
 }
 
 .btn-success {
-  border-color: green;
-  background-color: rgba(0, 255, 0, 0.4);
+  background-color: #28a745;
+  border-color: #28a745;
+}
+
+.btn-success:hover {
+  background-color: #218838;
+  border-color: #1e7e34;
 }
 
 .btn-danger {
-  border-color: red;
-  background-color: rgba(255, 0, 0, 0.4);
+  background-color: #dc3545;
+  border-color: #dc3545;
+}
+
+.btn-danger:hover {
+  background-color: #c82333;
+  border-color: #bd2130;
 }
 
 /* Hoverable items */
@@ -415,7 +432,6 @@ body {
 }
 
 .file .btn {
-  font-weight: bold;
   height: 18px;
   position: absolute;
   right: 10px;
