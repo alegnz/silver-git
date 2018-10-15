@@ -69,11 +69,7 @@ function createBranchSection() {
 
   // Shows local branches
   workspace.getLocalBranches().forEach(branchName => {
-    let className = 'hoverable' + (branchName == currentBranch ? ' current-branch' : '');
-
-    let html = '<li class="' + className + '"><i class="fas fa-code-branch"></i>' + branchName + '</li>';
-
-    $('#localBranches').append(html);
+    createBranchElement(branchName, $('#localBranches'), currentBranch);
   });
 
   // Shows remotes
@@ -89,12 +85,15 @@ function createBranchSection() {
     $('#remoteBranches').append(html);
 
     // Shows remote branches
-    remote.getBranches().forEach((branchName) => {
-      $('#remote-' + remote.name).append('<li class="hoverable"><i class="fas fa-code-branch"></i>' + branchName + '</li>');
-    });
+    remote.getBranches().forEach(branchName =>
+      createBranchElement(branchName, $('#remote-' + remote.name))
+    );
   });
 
-  // Add click event to accordion-header remote name elements
+  // Adds click event to local branch name parts
+  $('#localBranches .accordion-header').click(changeBranchListVisibility);
+
+  // Adds click event to accordion-header remote name elements
   $('#remoteBranches .accordion-header').click(changeBranchListVisibility);
 
   // Shows tags
@@ -104,6 +103,55 @@ function createBranchSection() {
 
   // Expands accordion sections
   $('#branches .section-content>.accordion-header').removeClass('collapsed');
+}
+
+function createBranchElement(branchName, parentElement, currentBranch) {
+  createBranchPartElement(branchName, branchName, parentElement, currentBranch);
+}
+
+function createBranchPartElement(tail, branchName, parentElement, currentBranch) {
+  let branchSections = tail.split('/');
+
+  // End of the name
+  if (branchSections.length == 1) {
+    let className = 'hoverable' + (branchName == currentBranch ? ' current-branch' : '');
+
+    // let liElement = $('<li><i class="fas fa-code-branch"></i>' + branchSections[0] + '</li>');
+    let liElement = $('<li class="' + className + '"><i class="fas fa-code-branch"></i>' + tail + '</li>');
+    parentElement.append(liElement);
+
+    addPaddingToBranchElement(liElement);
+  } else {
+    // If there is more than 1 part, add the first part to the tree (if it doesn't exists yet)
+    let branchBody = $('#branch-body-' + branchSections[0]);
+    if (!branchBody.length) {
+      let branchHeader = $('<li class="branch-header accordion-header hoverable">' +
+        '<i class="fas fa-caret-down""></i>' +
+        '<i class="fas fa-caret-right"></i>' +
+        branchSections[0] +
+        '<ul class="accordion-body"></ul>' +
+        '</li>');
+
+      branchBody = $('<ul id="branch-body-' + branchSections[0] + '" class="accordion-body"></ul>');
+
+      parentElement.append(branchHeader);
+      parentElement.append(branchBody);
+
+      addPaddingToBranchElement(branchHeader);
+    }
+
+    // Keep going with the rest of the name
+    createBranchPartElement(branchSections.slice(1).join('/'), branchName, branchBody, currentBranch);
+  }
+}
+
+function addPaddingToBranchElement(liElement) {
+  if (liElement.parent().prev().hasClass('branch-header')) {
+    let previousPadding = Number(liElement.parent().prev().css('padding-left').slice(0, -2));
+    let currentPadding = previousPadding + 20 + 'px';
+
+    liElement.css('padding-left', currentPadding);
+  }
 }
 
 function createFileLists() {

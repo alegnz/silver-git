@@ -45,7 +45,9 @@ class Workspace {
     branchSummary.all.forEach(name => {
       if (name.startsWith("remotes/")) {
         // Remote branches
-        let [, remoteName, branchName] = name.split('/');
+        let parts = name.split('/');
+        let remoteName = parts[1];
+        let branchName = parts.slice(2).join('/');
 
         // If that remote does'n exists yet, it creates it and add it to the map
         let remote = this.remotes.get(remoteName);

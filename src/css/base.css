@@ -263,21 +263,31 @@ body {
   border-top: 1px solid #aaa;
 }
 
+#branches ul {
+  margin: 0;
+  padding: 0;
+}
+
 /* remote name */
+#localBranches .accordion-header,
 #remoteBranches .accordion-header {
   padding: 2px;
   position: relative;
 }
 
+#localBranches .accordion-header .fa-caret-down,
+#localBranches .accordion-header .fa-caret-right,
 #remoteBranches .accordion-header .fa-caret-down,
 #remoteBranches .accordion-header .fa-caret-right {
   width: 10px;
 }
 
+#localBranches .accordion-header.collapsed .fa-caret-down,
 #remoteBranches .accordion-header.collapsed .fa-caret-down {
   display: none;
 }
 
+#localBranches .accordion-header:not(.collapsed) .fa-caret-right,
 #remoteBranches .accordion-header:not(.collapsed) .fa-caret-right {
   display: none;
 }
@@ -313,6 +323,7 @@ body {
 
 #stash {
   flex-grow: 1;
+  min-height: 100px;
 }
 
 #stash .section-content div {
