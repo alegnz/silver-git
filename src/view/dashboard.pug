@@ -1,7 +1,30 @@
 div#header
-  input#txtPath(type="text")/
-  button#btnChangePath.hidden Change path
-  button#btnSavePath Save path
+  div#repository
+    input#txtPath(type="text")/
+    div#btnChangePath.menu-button.tooltip.hidden
+      i.fas.fa-pencil-alt
+      span.tooltip-text Change path
+    div#btnSavePath.menu-button.tooltip
+      i.fas.fa-save
+      span.tooltip-text Save path
+  div#header-buttons
+    div#btn-stage-all.menu-button.tooltip
+      i.fas.fa-arrow-alt-circle-right
+      span.tooltip-text Stage all
+    div#btn-unstage-all.menu-button.tooltip
+      i.fas.fa-arrow-alt-circle-left
+      span.tooltip-text Unstage all
+    div#btn-stash.menu-button.tooltip
+      i.fas.fa-archive
+      span.tooltip-text Stash
+    div#btn-pull.menu-button.tooltip
+      i.fas.fa-arrow-alt-circle-down
+      span.tooltip-text Pull
+    div#btn-pull.menu-button.tooltip
+      i.fas.fa-arrow-alt-circle-up
+      span.tooltip-text Push
+    
+
 
 div#dashboard-main
   div#left-bar
@@ -10,7 +33,7 @@ div#dashboard-main
       p.section-title Branches
       div.section-content
         div.accordion-header.collapsed
-          i.fa.fa-tags/ Tags
+          i.fas.fa-tags/ Tags
         ul#tags.accordion-body
         
         div.accordion-header.collapsed
@@ -39,13 +62,11 @@ div#dashboard-main
       // WIP SECTION
       div.section.file-list
         p.section-title Work in progress
-        a#btn-stage-all.btn.btn-success Stage all
         div#wip.section-content
           
       // STAGING SECTION
       div.section.file-list
         p.section-title Staging area
-        a#btn-unstage-all.btn.btn-danger Unstage all
         div#staging.section-content
     
     // DIFF SECTION

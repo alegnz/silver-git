@@ -11,6 +11,7 @@ body {
 /******************************************************************************
  ****  general
  *****************************************************************************/
+/* Scrollbar */
 ::-webkit-scrollbar {
   background-color: #fafafa;
   height: 8px;
@@ -24,6 +25,7 @@ body {
   border-radius: 4px;
 }
 
+/* Buttons */
 .btn {
   border: solid 1.3px black;
   border-radius: 1.5px;
@@ -46,12 +48,50 @@ body {
   background-color: rgba(255, 0, 0, 0.4);
 }
 
+/* Hoverable items */
 .hoverable:hover {
   background-color: #e5e5e5;
 }
 
 .hoverable.selected {
   background-color: #e1e1e1;
+}
+
+/* Tooltip */
+.tooltip {
+  position: relative;
+}
+
+.tooltip-text {
+  background-color: rgba(10, 10, 10, 0.8);
+  border-radius: 3px;
+  color: #ddd;
+  font-size: 14px;
+  width: 100px;
+  padding: 5px 3px;
+  position: absolute;
+  right: 15px;
+  text-align: center;
+  top: 60px;
+  visibility: hidden;
+  z-index: 1;
+}
+
+.tooltip-text::before {
+  border-bottom: 5px solid rgba(10, 10, 10, 0.8);
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  content: '';
+  display: block;
+  height: 0;
+  position: absolute;
+  right: 8px;
+  top: -5px;
+  width: 0;
+}
+
+.tooltip:hover .tooltip-text {
+  visibility: visible;
 }
 
 /* Accordion pattern */
@@ -80,8 +120,14 @@ body {
 }
 
 #header {
+  align-items: center;
+  /* background-color: #d3d3d3; */
+  background-color: #ccc;
+  border-bottom: 1px solid #aaa;
+  display: flex;
   flex-shrink: 0;
-  height: 20px;
+  height: 45px;
+  justify-content: space-between;
   padding: 10px;
 }
 
@@ -148,9 +194,39 @@ body {
 /******************************************************************************
  ****  header
  *****************************************************************************/
+#repository {
+  align-items: center;
+  display: flex;
+  flex-direction: row;
+}
+
 #txtPath {
+  font-size: 16px;
   width: 300px;
   margin-right: 10px;
+  padding: 3px;
+}
+
+#header-buttons {
+  display: flex;
+  flex-direction: row;
+  margin-right: 8px;
+}
+
+.menu-button {
+  border-radius: 3px;
+  height: 36px;
+  margin: 5px;
+  padding: 8px;
+  width: 36px;
+}
+
+.menu-button:hover {
+  background-color: #bababa;
+}
+
+.menu-button i {
+  font-size: 36px;
 }
 
 /******************************************************************************
@@ -305,18 +381,6 @@ body {
 
 .file-list .section-content {
   overflow-y: scroll;
-}
-
-#btn-stage-all {
-  position: absolute;
-  right: 5px;
-  top: 0;
-}
-
-#btn-unstage-all {
-  position: absolute;
-  right: 5px;
-  top: 0;
 }
 
 #wip {
