@@ -12,6 +12,9 @@ $(document).ready(() => {
   $('#btn-unstage-all').click(unstageAllFiles);
   $('#btn-stash').click(stashWorkingDirectory);
 
+  $('#txtCommitTitle').keyup(refreshCommitButton);
+  $('#btnCommit').click(commit);
+
   $('#open-terminal').click(changeTerminalVisibility);
   $('#btnMinimizeTerminal').click(changeTerminalVisibility);
 });
@@ -52,8 +55,19 @@ function changeBranchListVisibility() {
 function refreshView() {
   createFileLists();
   createStashList();
+  refreshCommitButton();
 
   workspace.getDiffAll().then(result => createDiffContent(result, true));
+}
+
+function refreshCommitButton() {
+  let btnDisabled = !(workspace.hasFilesInStagingArea() && $('#txtCommitTitle').val().trim() != '');
+
+  if (btnDisabled) {
+    $('#btnCommit').addClass('disabled');
+  } else {
+    $('#btnCommit').removeClass('disabled');
+  }
 }
 
 function createBranchSection() {
@@ -337,6 +351,19 @@ function stashWorkingDirectory() {
 
   workspace.stash(message)
     .then(() => refreshView());
+}
+
+function commit() {
+  if ($('#btnCommit').hasClass('disabled')) {
+    return;
+  }
+
+  workspace.commit($('#txtCommitTitle').val(), $('#txtCommitMessage').val())
+    .then(() => refreshView());
+
+  // Cleans commit textboxes
+  $('#txtCommitTitle').val('');
+  $('#txtCommitMessage').val('');
 }
 
 function changeTerminalVisibility() {

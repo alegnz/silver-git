@@ -123,6 +123,12 @@ class Workspace {
     });
   }
 
+  hasFilesInStagingArea() {
+    return Array.from(this.files.values()).some(file => {
+      return file.hasChangedInIndex()
+    });
+  }
+
   getCurrentBranch() {
     return this.currentBranch;
   }
@@ -234,6 +240,21 @@ class Workspace {
 
   async stash(stashMessage) {
     await simpleGit.stash(['save', stashMessage]);
+
+    // Refreshes file and stash lists
+    await this._initializeFiles();
+    await this._initializeStashes();
+  }
+
+  async commit(commitSummary, commitDescription) {
+    let commitMessage = commitSummary;
+
+    if (commitDescription) {
+      // Adds a blank line before commitDescription
+      commitMessage += '\n\n' + commitDescription;
+    }
+
+    await simpleGit.commit(commitMessage);
 
     // Refreshes file and stash lists
     await this._initializeFiles();
