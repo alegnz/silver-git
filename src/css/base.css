@@ -352,6 +352,10 @@ body {
   min-height: 100px;
 }
 
+#stash .section-content {
+  overflow-y: scroll;
+}
+
 #stash .section-content div {
   overflow: hidden;
   padding: 5px;
