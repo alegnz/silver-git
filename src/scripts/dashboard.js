@@ -285,6 +285,8 @@ function createFileElement(path, status, container) {
   let button = $('<a></a>');
   let fileContainer = $('<div></div>');
 
+  fileContainer.data('path', path);
+
   button.text(buttonText);
   button.addClass(buttonClass);
   fileContainer.addClass(statusClass);
@@ -326,7 +328,7 @@ function fileSelected() {
 }
 
 function stageFile(aux) {
-  let fileName = $(this).prev().text();
+  let fileName = $(this).parent().data('path');
 
   workspace.stageFile(fileName)
     .then(() => refreshView());
@@ -336,7 +338,7 @@ function stageFile(aux) {
 }
 
 function unstageFile() {
-  let fileName = $(this).prev().text();
+  let fileName = $(this).parent().data('path')
 
   workspace.unstageFile(fileName)
     .then(() => refreshView());
