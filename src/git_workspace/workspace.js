@@ -3,6 +3,7 @@ const simpleGit = require('simple-git/promise')();
 const Remote = require('./remote');
 const File = require('./file');
 const GitStatus = require('./gitStatus');
+const Stash = require('./stash');
 
 class Workspace {
 
@@ -115,12 +116,33 @@ class Workspace {
       return;
     }
 
-    listLogSummary.all.forEach(listLogLine => {
-      // Removes refs/stash message
+    for (let i = 0; i < listLogSummary.all.length; i++) {
+      let listLogLine = listLogSummary.all[i];
+
+      // Remove refs/stash message
       let stashMessage = listLogLine.message.replace(' (refs/stash)', '');
 
-      this.stashes.push(stashMessage);
-    });
+      let stash = new Stash(i, stashMessage);
+
+      let stashInfo = null;
+      try {
+        stashInfo = await simpleGit.stash(['show', stash.getName()]);
+      } catch (err) {
+        console.error(err);
+      }
+
+      let lines = stashInfo.split('\n').slice(0, -2);
+      lines.forEach(line => {
+        // Remove first blank space
+        line = line.substring(1);
+
+        let path = line.substring(0, line.indexOf(' '));
+
+        stash.addFile(new File(path));
+      });
+
+      this.stashes.push(stash);
+    }
   }
 
   hasFilesInStagingArea() {
@@ -151,6 +173,10 @@ class Workspace {
 
   getStashes() {
     return this.stashes;
+  }
+
+  getStash(index) {
+    return this.stashes[index];
   }
 
   async getDiffAll() {

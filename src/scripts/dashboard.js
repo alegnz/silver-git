@@ -174,11 +174,11 @@ function createFileLists() {
 
   workspace.getFiles().forEach(file => {
     if (file.hasChangedInIndex()) {
-      createFileElement(file.getPath(), file.getIndexStatus().desc, $('#staging'));
+      createFileElement(file.getPath(), $('#staging'), file.getIndexStatus().desc);
     }
 
     if (file.hasChangedInWorkingDir()) {
-      createFileElement(file.getPath(), file.getWorkingDirStatus().desc, $('#wip'));
+      createFileElement(file.getPath(), $('#wip'), file.getWorkingDirStatus().desc);
     }
   });
 }
@@ -186,14 +186,44 @@ function createFileLists() {
 function createStashList() {
   $('#stash .section-content').empty();
 
-  workspace.getStashes().forEach(stashMessage => {
-    let html = '<div class="hoverable">' +
+  workspace.getStashes().forEach(stash => {
+    let stashDiv = $('<div class="stash hoverable">' +
       '<i class="fas fa-archive"></i>' +
-      stashMessage +
-      '</div>';
+      '<span>' + stash.getMessage() + '</span>' +
+      '</div>');
 
-    $('#stash .section-content').append(html);
-  })
+    stashDiv.data('index', stash.getIndex());
+    stashDiv.click(stashSelected);
+
+    $('#stash .section-content').append(stashDiv);
+  });
+}
+
+function stashSelected() {
+  // Clean stash-files section
+  $('#stash-files .section-content').empty();
+
+  if ($(this).hasClass('selected')) {
+    // If the stash was selected, unselect it and show wip and staging sections
+    $(this).removeClass('selected');
+    $('#stash-files').addClass('hidden');
+    $('#files').removeClass('hidden');
+  } else {
+    // If the stash wasn't selected, unselect other stashes and hide wip and staging sections
+    $('.stash').removeClass('selected');
+    $(this).addClass('selected');
+    $('#stash-files').removeClass('hidden');
+    $('#files').addClass('hidden');
+
+    // Sets stash title
+    $('#stash-files .section-title').html($(this).first('span').text());
+
+    // Sets stash file list
+    let stashIndex = $(this).data('index');
+    workspace.getStash(stashIndex).getFiles().forEach(file =>
+      createFileElement(file.getPath(), $('#stash-files .section-content'))
+    );
+  }
 }
 
 function createDiffContent(diffString, workingDirectory) {
@@ -257,7 +287,9 @@ function createDiffContent(diffString, workingDirectory) {
   }
 }
 
-function createFileElement(path, status, container) {
+function createFileElement(path, container, status) {
+  status = status || '';
+
   let filePath = "";
   let fileName;
 

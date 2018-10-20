@@ -408,6 +408,16 @@ body {
   display: flex;
   flex-direction: row;
   flex-shrink: 0;
+  height: 200px;
+}
+
+#stash-files {
+  flex-shrink: 0;
+  height: 190px;
+}
+
+#stash-files .section-content {
+  overflow-y: scroll;
 }
 
 .file-list {
@@ -420,14 +430,6 @@ body {
 
 .file-list .section-content {
   overflow-y: scroll;
-}
-
-#wip {
-  height: 150px;
-}
-
-#staging {
-  height: 150px;
 }
 
 .file {
