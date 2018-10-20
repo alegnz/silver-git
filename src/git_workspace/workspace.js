@@ -179,6 +179,27 @@ class Workspace {
     return this.stashes[index];
   }
 
+  async getDiffStashAll(stash) {
+    return await this._getDiffStash(stash.getName());
+  }
+
+  async getDiffStashFile(stash, filePath) {
+    console.log(stash);
+    // TODO get diff of a single file in stash
+    return "";
+  }
+
+  async _getDiffStash(stashName) {
+    let diffText = '';
+    try {
+      diffText = await simpleGit.stash(['show', '-p', stashName]);
+    } catch (err) {
+      console.error(err);
+    }
+
+    return diffText;
+  }
+
   async getDiffAll() {
     // TODO add lines for untracked files
     return await this._getDiff();

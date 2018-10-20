@@ -1,5 +1,8 @@
 const Workspace = require('./git_workspace/workspace.js');
 
+let workspace;
+let stashInView;
+
 $(document).ready(() => {
   $('#btnSavePath').click(initializeRepository);
 
@@ -208,6 +211,9 @@ function stashSelected() {
     $(this).removeClass('selected');
     $('#stash-files').addClass('hidden');
     $('#files').removeClass('hidden');
+
+    // Show working directory diff
+    workspace.getDiffAll().then(result => createDiffContent(result, true));
   } else {
     // If the stash wasn't selected, unselect other stashes and hide wip and staging sections
     $('.stash').removeClass('selected');
@@ -220,9 +226,14 @@ function stashSelected() {
 
     // Sets stash file list
     let stashIndex = $(this).data('index');
-    workspace.getStash(stashIndex).getFiles().forEach(file =>
+    stashInView = workspace.getStash(stashIndex);
+
+    stashInView.getFiles().forEach(file =>
       createFileElement(file.getPath(), $('#stash-files .section-content'))
     );
+
+    // Show stash diff
+    workspace.getDiffStashAll(stashInView).then(result => createDiffContent(result));
   }
 }
 
@@ -350,9 +361,14 @@ function fileSelected() {
     $(this).addClass('selected');
 
     if ($(this).parent().prop('id') == 'staging') {
+      // File in staging area
       diffFunction = workspace.getDiffIndex(fileName);
-    } else {
+    } else if (($(this).parent().prop('id') == 'wip')) {
+      // File in working directory area
       diffFunction = workspace.getDiffWorkingDir(fileName);
+    } else {
+      // File in stash
+      diffFunction = workspace.getDiffStashFile(stashInView, fileName);
     }
   }
 
