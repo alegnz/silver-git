@@ -83,7 +83,7 @@ function createBranchSection() {
 
   // Shows local branches
   workspace.getLocalBranches().forEach(branchName => {
-    createBranchElement(branchName, $('#localBranches'), currentBranch);
+    createBranchElement(branchName, $('#localBranches'), currentBranch, 'local');
   });
 
   // Shows remotes
@@ -100,7 +100,7 @@ function createBranchSection() {
 
     // Shows remote branches
     remote.getBranches().forEach(branchName =>
-      createBranchElement(branchName, $('#remote-' + remote.name))
+      createBranchElement(branchName, $('#remote-' + remote.name), remote.name)
     );
   });
 
@@ -119,11 +119,11 @@ function createBranchSection() {
   $('#branches .section-content>.accordion-header').removeClass('collapsed');
 }
 
-function createBranchElement(branchName, parentElement, currentBranch) {
-  createBranchPartElement(branchName, branchName, parentElement, currentBranch);
+function createBranchElement(branchName, parentElement, currentBranch, repoName) {
+  createBranchPartElement(branchName, branchName, parentElement, currentBranch, repoName);
 }
 
-function createBranchPartElement(tail, branchName, parentElement, currentBranch) {
+function createBranchPartElement(tail, branchName, parentElement, currentBranch, repoName) {
   let branchSections = tail.split('/');
 
   // End of the name
@@ -137,7 +137,7 @@ function createBranchPartElement(tail, branchName, parentElement, currentBranch)
     addPaddingToBranchElement(liElement);
   } else {
     // If there is more than 1 part, add the first part to the tree (if it doesn't exists yet)
-    let branchBody = $('#branch-body-' + branchSections[0]);
+    let branchBody = $('#' + repoName + '-branch-body-' + branchSections[0]);
     if (!branchBody.length) {
       let branchHeader = $('<li class="branch-header accordion-header hoverable">' +
         '<i class="fas fa-caret-down""></i>' +
@@ -146,7 +146,7 @@ function createBranchPartElement(tail, branchName, parentElement, currentBranch)
         '<ul class="accordion-body"></ul>' +
         '</li>');
 
-      branchBody = $('<ul id="branch-body-' + branchSections[0] + '" class="accordion-body"></ul>');
+      branchBody = $('<ul id="' + repoName + '-branch-body-' + branchSections[0] + '" class="accordion-body"></ul>');
 
       parentElement.append(branchHeader);
       parentElement.append(branchBody);
