@@ -165,6 +165,8 @@ body {
   display: flex;
   flex-direction: column;
   flex-grow: 1;
+  /* Makes flex items children to shrink */
+  min-width: 0;
 }
 
 #footer {
@@ -412,6 +414,8 @@ body {
   flex-basis: 0;
   flex-grow: 1;
   position: relative;
+  /* Makes flex items children to shrink */
+  min-width: 0;
 }
 
 .file-list .section-content {
@@ -434,6 +438,17 @@ body {
   position: relative;
 }
 
+.file .path {
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.file .path,
+.file .name {
+  margin: auto 0;
+  white-space: nowrap;
+}
+
 .file>div {
   margin-left: 5px;
 }
@@ -452,7 +467,7 @@ body {
   transition: top 0.3s;
 }
 
-.file span::before {
+.file .path::before {
   border: 2px solid;
   border-radius: 3px;
   color: blue;
@@ -463,43 +478,43 @@ body {
   width: 20px;
 }
 
-.untracked span::before {
+.untracked .path::before {
   border-color: orange;
   color: orange;
   content: '?';
 }
 
-.added span::before {
+.added .path::before {
   border-color: green;
   color: green;
   content: 'A';
 }
 
-.modified span::before {
+.modified .path::before {
   border-color: blue;
   color: blue;
   content: 'M';
 }
 
-.deleted span::before {
+.deleted .path::before {
   border-color: red;
   color: red;
   content: 'D';
 }
 
-.renamed span::before {
+.renamed .path::before {
   border-color: brown;
   color: brown;
   content: 'R';
 }
 
-.copied span::before {
+.copied .path::before {
   border-color: brown;
   color: brown;
   content: 'C';
 }
 
-.updated-unmerged span::before {
+.updated-unmerged .path::before {
   border-color: red;
   color: red;
   content: 'U';

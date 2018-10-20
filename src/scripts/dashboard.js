@@ -257,7 +257,17 @@ function createDiffContent(diffString, workingDirectory) {
   }
 }
 
-function createFileElement(filePath, status, container) {
+function createFileElement(path, status, container) {
+  let filePath = "";
+  let fileName;
+
+  if (path.lastIndexOf('/') != -1) {
+    filePath = path.slice(0, path.lastIndexOf('/'));
+    fileName = path.slice(path.lastIndexOf('/'));
+  } else {
+    fileName = path;
+  }
+
   let statusClass = 'file hoverable ' + status;
 
   let buttonClass = 'btn btn-';
@@ -270,16 +280,16 @@ function createFileElement(filePath, status, container) {
     buttonText = '-';
   }
 
-  let fileName = $('<span></span>');
+  let filePathElement = $('<span class="path">' + filePath + '</span>');
+  let fileNameElement = $('<span class="name">' + fileName + '</span>');
   let button = $('<a></a>');
   let fileContainer = $('<div></div>');
 
-  fileName.text(filePath);
   button.text(buttonText);
   button.addClass(buttonClass);
   fileContainer.addClass(statusClass);
 
-  fileContainer.append(fileName, button);
+  fileContainer.append(filePathElement, fileNameElement, button);
 
   fileContainer.click(fileSelected);
 
