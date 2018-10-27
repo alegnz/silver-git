@@ -307,6 +307,30 @@ class Workspace {
     await this._initializeFiles();
     await this._initializeStashes();
   }
+
+  pullBranch() {
+    console.error('pullBranch() - Not implemented yet!');
+  }
+
+  pushBranch() {
+    console.error('pushBranch() - Not implemented yet!');
+  }
+
+  createBranch() {
+    console.error('createBranch() - Not implemented yet!');
+  }
+
+  deleteBranch() {
+    console.error('deleteBranch() - Not implemented yet!');
+  }
+
+  renameBranch() {
+    console.error('renameBranch() - Not implemented yet!');
+  }
+
+  createTag() {
+    console.error('createTag() - Not implemented yet!');
+  }
 }
 
 module.exports = Workspace;

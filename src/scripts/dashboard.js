@@ -1,7 +1,11 @@
 const Workspace = require('./git_workspace/workspace.js');
+const LocalBranchContextMenu = require('./scripts/menu/localBranchContextMenu.js');
 
 let workspace;
 let stashInView;
+
+// Context menu
+let localBranchContextMenu = new LocalBranchContextMenu();
 
 $(document).ready(() => {
   $('#btnSavePath').click(initializeRepository);
@@ -28,6 +32,8 @@ function initializeRepository() {
   changeRepoVisibility();
 
   workspace = new Workspace(path);
+
+  localBranchContextMenu.setWorkspace(workspace);
 
   workspace.initialize().then(() => {
     createBranchSection();
@@ -89,6 +95,10 @@ function createBranchSection() {
     createBranchElement(branchName, $('#localBranches'), currentBranch, 'local');
   });
 
+  $('#localBranches li:not(.branch-header)').contextmenu(evt => {
+    localBranchContextMenu.show($(evt.target).data('branchName'));
+  });
+
   // Shows remotes
   workspace.getRemotes().forEach(remote => {
     let html =
@@ -133,8 +143,8 @@ function createBranchPartElement(tail, branchName, parentElement, currentBranch,
   if (branchSections.length == 1) {
     let className = 'hoverable' + (branchName == currentBranch ? ' current-branch' : '');
 
-    // let liElement = $('<li><i class="fas fa-code-branch"></i>' + branchSections[0] + '</li>');
     let liElement = $('<li class="' + className + '"><i class="fas fa-code-branch"></i>' + tail + '</li>');
+    liElement.data('branchName', branchName);
     parentElement.append(liElement);
 
     addPaddingToBranchElement(liElement);
