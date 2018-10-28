@@ -71,6 +71,56 @@ body {
   border-color: #bd2130;
 }
 
+/* Spinner */
+.spinner {
+  position: absolute;
+  top: calc(50% - 30px);
+  left: calc(50% - 30px);
+}
+
+.spinner.sm {
+  top: calc(50% - 15px);
+  left: calc(50% - 15px);
+}
+
+.spinner-lg {
+  top: calc(50% - 40px);
+  left: calc(50% - 40px);
+}
+
+.spinner:after {
+  content: " ";
+  display: block;
+  width: 50px;
+  height: 50px;
+  margin: auto;
+  border-radius: 50%;
+  border: 5px solid #999;
+  border-left-color: transparent;
+  border-right-color: transparent;
+  animation: spinner 1.2s linear infinite;
+}
+
+.spinner.sm:after {
+  width: 20px;
+  height: 20px;
+}
+
+.spinner.lg:after {
+  width: 70px;
+  height: 70px;
+}
+
+@keyframes spinner {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
 /* Hoverable items */
 .hoverable:hover {
   background-color: #e5e5e5;
@@ -215,6 +265,7 @@ body {
 .section-content {
   background-color: #fafafa;
   flex-grow: 1;
+  position: relative;
 }
 
 /******************************************************************************
@@ -271,7 +322,6 @@ body {
 }
 
 #branches .section-content {
-  flex-grow: 1;
   overflow-x: hidden;
   overflow-y: scroll;
 }
@@ -422,6 +472,12 @@ body {
 
 #stash-files .section-content {
   overflow-y: scroll;
+}
+
+#wip, #staging {
+  display: flex;
+  flex-direction: column;
+  align-content: center;
 }
 
 .file-list {

@@ -23,14 +23,7 @@ class Workspace {
     this.files = new Map();
   }
 
-  async initialize() {
-    await this._initializeBranches();
-    await this._initializeTags();
-    await this._initializeFiles();
-    await this._initializeStashes();
-  }
-
-  async _initializeBranches() {
+  async initializeBranchesAndRemotes() {
     this.localBranches = [];
     this.remotes.clear();
 
@@ -69,7 +62,7 @@ class Workspace {
     });
   }
 
-  async _initializeTags() {
+  async initializeTags() {
     this.tags = [];
 
     // Gets tags
@@ -84,7 +77,7 @@ class Workspace {
     tagList.all.forEach(tagName => this.tags.push(tagName));
   }
 
-  async _initializeFiles() {
+  async initializeFiles() {
     this.files.clear();
 
     let statusSummary = null;
@@ -105,7 +98,7 @@ class Workspace {
     });
   }
 
-  async _initializeStashes() {
+  async initializeStashes() {
     this.stashes = [];
 
     let listLogSummary = null;

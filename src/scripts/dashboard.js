@@ -33,12 +33,31 @@ function initializeRepository() {
 
   workspace = new Workspace(path);
 
+  // Set context menu
   localBranchContextMenu.setWorkspace(workspace);
 
-  workspace.initialize().then(() => {
-    createBranchSection();
-    refreshView();
+
+  // Set spinners
+  $('#wip').empty();
+  $('#wip').append('<div class="spinner"></div>');
+
+  $('#staging').empty();
+  $('#staging').append('<div class="spinner"></div>');
+
+
+  // initialize repo and load screen
+  workspace.initializeBranchesAndRemotes().then(() => createBranchAndRemoteSections());
+
+  workspace.initializeTags().then(() => createTagSection());
+
+  workspace.initializeStashes().then(() => createStashList());
+
+  workspace.initializeFiles().then(() => {
+    createFileLists();
+    refreshCommitButton();
   });
+
+  resetDiffSection(workspace.getDiffAll(), true);
 }
 
 function changeRepoVisibility() {
@@ -66,7 +85,7 @@ function refreshView() {
   createStashList();
   refreshCommitButton();
 
-  workspace.getDiffAll().then(result => createDiffContent(result, true));
+  resetDiffSection(workspace.getDiffAll(), true);
 }
 
 function refreshCommitButton() {
@@ -79,11 +98,10 @@ function refreshCommitButton() {
   }
 }
 
-function createBranchSection() {
+function createBranchAndRemoteSections() {
   // Cleans branches
   $('#localBranches').empty();
   $('#remoteBranches').empty();
-  $('#tags').empty();
 
   let currentBranch = workspace.getCurrentBranch();
 
@@ -123,13 +141,17 @@ function createBranchSection() {
   // Adds click event to accordion-header remote name elements
   $('#remoteBranches .accordion-header').click(changeBranchListVisibility);
 
+  // Expands accordion sections
+  $('#branches .section-content>.accordion-header').removeClass('collapsed');
+}
+
+function createTagSection() {
+  $('#tags').empty();
+
   // Shows tags
   workspace.getTags().forEach(tagName => {
     $('#tags').append('<li class="hoverable">' + tagName + '</li>');
   });
-
-  // Expands accordion sections
-  $('#branches .section-content>.accordion-header').removeClass('collapsed');
 }
 
 function createBranchElement(branchName, parentElement, currentBranch, repoName) {
@@ -223,7 +245,7 @@ function stashSelected() {
     $('#files').removeClass('hidden');
 
     // Show working directory diff
-    workspace.getDiffAll().then(result => createDiffContent(result, true));
+    resetDiffSection(workspace.getDiffAll(), true);
   } else {
     // If the stash wasn't selected, unselect other stashes and hide wip and staging sections
     $('.stash').removeClass('selected');
@@ -243,16 +265,32 @@ function stashSelected() {
     );
 
     // Show stash diff
-    workspace.getDiffStashAll(stashInView).then(result => createDiffContent(result));
+    resetDiffSection(workspace.getDiffStashAll(stashInView));
   }
 }
 
-function createDiffContent(diffString, workingDirectory) {
+function resetDiffSection(diffFunction, isWorkingDirectory) {
+  // Clean section and set spinner
+  $('#diff .section-content').empty();
+  $('#diff .section-content').append('<div class="spinner"></div>');
+
+  console.log('function received');
+  console.log(diffFunction);
+
+  // Call diff function and set the content
+  diffFunction.then(result => {
+    console.log('setting!!!');
+    createDiffContent(result)
+  });
+}
+
+function createDiffContent(diffString, isWorkingDirectory) {
   // Cleans diff section
   $('#diff .section-content').empty();
 
+  console.log('diff section');
   // If there is no lines, the working directory is clean
-  if (workingDirectory && diffString.length == 0) {
+  if (isWorkingDirectory && diffString.length == 0) {
     let htmlNoContent = '<div class="no-content"><div>Working directory clean</div></div>';
 
     $('#diff .section-content').append(htmlNoContent);
@@ -382,7 +420,7 @@ function fileSelected() {
     }
   }
 
-  diffFunction.then(result => createDiffContent(result));
+  resetDiffSection(diffFunction);
 }
 
 function stageFile(aux) {
