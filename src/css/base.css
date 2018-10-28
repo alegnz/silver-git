@@ -397,16 +397,7 @@ body {
   font-weight: bold;
 }
 
-#stash {
-  flex-grow: 1;
-  min-height: 100px;
-}
-
-#stash .section-content {
-  overflow-y: scroll;
-}
-
-#stash .section-content div {
+#stash div {
   overflow: hidden;
   padding: 5px;
   text-overflow: ellipsis;
@@ -414,7 +405,7 @@ body {
   width: 270px;
 }
 
-#stash .section-content div i.fas {
+#stash div i.fas {
   margin-right: 5px;
 }
 

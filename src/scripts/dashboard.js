@@ -219,7 +219,7 @@ function createFileLists() {
 }
 
 function createStashList() {
-  $('#stash .section-content').empty();
+  $('#stash').empty();
 
   workspace.getStashes().forEach(stash => {
     let stashDiv = $('<div class="stash hoverable">' +
@@ -230,7 +230,7 @@ function createStashList() {
     stashDiv.data('index', stash.getIndex());
     stashDiv.click(stashSelected);
 
-    $('#stash .section-content').append(stashDiv);
+    $('#stash').append(stashDiv);
   });
 }
 

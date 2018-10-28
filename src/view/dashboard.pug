@@ -31,22 +31,25 @@ div#dashboard-main
     div#branches.section
       p.section-title Branches
       div.section-content
+        // Tags
         div.accordion-header.collapsed
           i.fas.fa-tags/ Tags
         ul#tags.accordion-body
         
+        // Local branches
         div.accordion-header.collapsed
           i.fas.fa-desktop/ Local
         ul#localBranches.accordion-body
-          
+        
+        // Remote branches
         div.accordion-header.collapsed
           i.fas.fa-cloud/ Remote
         div#remoteBranches.accordion-body
-          
-    // STASH section
-    div#stash.section
-      p.section-title Stash
-      div.section-content
+        
+        // Stashes
+        div.accordion-header.collapsed
+          i.fas.fa-archive/ Stashes
+        div#stash.accordion-body
     
     // COMMIT SECTION
     div#commit.section
